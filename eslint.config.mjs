@@ -38,7 +38,12 @@ const eslintConfig = [
         },
       ],
       'perfectionist/sort-objects': 'warn',
-      'perfectionist/sort-union-types': 'warn',
+      // 'perfectionist/sort-union-types': [
+      //   'warn',
+      //   {
+      //     groups: ['nullish'],
+      //   },
+      // ],
     },
   },
 ];
