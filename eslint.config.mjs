@@ -17,6 +17,7 @@ const eslintConfig = [
       perfectionist,
     },
     rules: {
+      '@typescript-eslint/no-unused-vars': 'warn',
       'perfectionist/sort-enums': 'warn',
       'perfectionist/sort-exports': 'warn',
       'perfectionist/sort-imports': 'warn',
@@ -38,12 +39,27 @@ const eslintConfig = [
         },
       ],
       'perfectionist/sort-objects': 'warn',
-      // 'perfectionist/sort-union-types': [
-      //   'warn',
-      //   {
-      //     groups: ['nullish'],
-      //   },
-      // ],
+      'perfectionist/sort-union-types': [
+        'warn',
+        {
+          groups: [
+            'conditional',
+            'function',
+            'import',
+            'intersection',
+            'named',
+            'object',
+            'operator',
+            'literal',
+            'keyword',
+            'tuple',
+            'union',
+            'nullish',
+          ],
+          order: 'asc',
+          type: 'alphabetical',
+        },
+      ],
     },
   },
 ];
