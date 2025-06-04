@@ -5,6 +5,7 @@ import { createContext, FC, ReactNode, useContext, useRef } from 'react';
 
 class TestStore {
   count = 1;
+  requestId = Math.random().toString(36).slice(2);
 
   constructor() {
     makeAutoObservable(this);
@@ -32,7 +33,6 @@ export function createMobxContext<StoreType>() {
     const state = useStore();
     const ref = useRef(false);
 
-    // FIXME: put in in useEffect?
     if (!ref.current) {
       fn();
       ref.current = true;
@@ -45,7 +45,6 @@ export function createMobxContext<StoreType>() {
     const StoreProvider: FC<{ children: ReactNode }> = ({ children }) => {
       const storeRef = useRef<StoreType | null>(null);
 
-      // FIXME: put in in useEffect?
       if (!storeRef.current) {
         storeRef.current = makeStore();
       }
