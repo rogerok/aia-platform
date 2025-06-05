@@ -1,9 +1,7 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 
-if (!process.env.NEON_DATABASE_URL) {
-  throw new Error(
-    'NEON_DATABASE_URL must be a Neon postgres connection string',
-  );
+if (!process.env.NEXT_PUBLIC_DATABASE_URL) {
+  throw new Error('DATABASE_URL does not exist');
 }
 
-export const db = drizzle(process.env.NEON_DATABASE_URL);
+export const db = drizzle(process.env.NEXT_PUBLIC_DATABASE_URL);

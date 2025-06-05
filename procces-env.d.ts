@@ -4,7 +4,7 @@ declare global {
       AUTH_PASSWORD: string;
       AUTH_SECRET: string;
       AUTH_URL: string;
-      NEON_DATABASE_URL: string;
+      NEXT_PUBLIC_DATABASE_URL: string;
     }
   }
 }
