@@ -29,16 +29,16 @@ export function createMobxContext<StoreType>() {
     return value;
   };
 
-  const useStoreHydration = (fn: () => void) => {
-    const state = useStore();
-    const ref = useRef(false);
+  const useStoreHydration = (fn: (store: StoreType) => void) => {
+    const store = useStore();
+    const initializationRef = useRef(false);
 
-    if (!ref.current) {
-      fn();
-      ref.current = true;
+    if (!initializationRef.current) {
+      fn(store);
+      initializationRef.current = true;
     }
 
-    return state;
+    return store;
   };
 
   const createProvider = (makeStore: () => StoreType) => {
