@@ -33,13 +33,17 @@ const Page = (props: PageProps) => {
 
   return (
     <div className={'flex border-2 text-4xl font-bold text-gray-600'}>
-      <form className={'flex w-1/4 flex-col items-center justify-center gap-1'}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+        className={'flex w-1/4 flex-col items-center justify-center gap-1'}
+      >
         <Input onChange={(e) => setName(e.target.value)} value={name} />
         <Input onChange={(e) => setEmail(e.target.value)} value={email} />
         <Input onChange={(e) => setPassword(e.target.value)} value={password} />
-        <Button onSubmit={handleSubmit} type="submit">
-          Register
-        </Button>
+        <Button type="submit">Register</Button>
       </form>
     </div>
   );
