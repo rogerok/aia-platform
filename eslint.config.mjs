@@ -17,6 +17,7 @@ const eslintConfig = [
       perfectionist,
     },
     rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
       'perfectionist/sort-enums': 'warn',
       'perfectionist/sort-exports': 'warn',

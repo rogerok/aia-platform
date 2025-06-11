@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+
 import { Card } from '@/components/ui/card';
 
 export const SignUp: FC = () => {
