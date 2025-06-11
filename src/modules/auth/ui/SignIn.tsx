@@ -33,28 +33,32 @@ export const SignIn = observer(() => {
   );
 
   return (
-    <div className={'flex flex-col gap-6'}>
-      <Card>
-        <h1 className={'text-2xl'}>Sign in</h1>
-        <CardContent className={'grid md:grid-cols-2'}>
-          <div className="">1</div>
-          <div className="">1</div>
-          <Form<TestForm> methods={form}>
-            <TextField name={'email'} />
-            <TextField name={'password'} />
-            {/*<Button type={'submit'}>Submit</Button>*/}
-          </Form>
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.destroy();
-            }}
-          >
-            Submit
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className={'flex flex-col gap-6 py-0'}>
+      <CardContent className={'grid h-full gap-6 p-0 md:grid-cols-2'}>
+        <Form<TestForm> className={'flex flex-col gap-4 p-4'} methods={form}>
+          <TextField label={'Email'} name={'email'} placeholder={'Email'} />
+          <TextField
+            label={'Password'}
+            name={'password'}
+            placeholder={'Password'}
+          />
+          <Button type={'submit'}>Submit</Button>
+        </Form>
+        <div
+          className={
+            'relative hidden h-full w-full flex-col items-center justify-center gap-4 rounded-xl bg-radial from-cyan-50 to-gray-900 md:flex'
+          }
+        >
+          <img
+            alt={'logo'}
+            className={'h-[120px] w-[120px]'}
+            src={'./logo.svg'}
+          />
+          <p className={'text-accent self-center text-2xl font-semibold'}>
+            AIA Platform
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 });
