@@ -1,4 +1,4 @@
-import { SignUp } from '@/modules/auth/ui/SignUp';
+import { SignUp } from '@/modules/auth/ui/signUp/SignUp';
 
 const Page = () => {
   return <SignUp />;
