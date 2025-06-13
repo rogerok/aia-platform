@@ -1,13 +1,15 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { observer } from 'mobx-react-lite';
 import { FC, useState } from 'react';
 
 import { TextField } from '@/components/form/fields/TextField/TextField';
 import { Form } from '@/components/form/Form/Form';
 import { Button } from '@/components/ui/button';
+import { authClient, AuthController } from '@/lib/auth';
 import { MobxForm } from '@/lib/form/mobxForm';
 import { AuthModel } from '@/modules/auth/models/auth';
 
-export const SignInForm: FC = () => {
+export const SignInForm: FC = observer(() => {
   const [form] = useState(
     () =>
       new MobxForm<AuthModel>({
@@ -17,9 +19,11 @@ export const SignInForm: FC = () => {
           password: '',
         },
         lazyUpdates: false,
-        onSubmit: (values) => {
-          console.log(values);
-        },
+        onSubmit: async (data) =>
+          await new AuthController(authClient).signInWithEmailAndPassword(
+            data.email,
+            data.password,
+          ),
         resolver: classValidatorResolver(AuthModel),
       }),
   );
@@ -44,4 +48,4 @@ export const SignInForm: FC = () => {
       </Button>
     </Form>
   );
-};
+});
