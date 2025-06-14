@@ -5,14 +5,15 @@ import { FC, useState } from 'react';
 import { TextField } from '@/components/form/fields/TextField/TextField';
 import { Form } from '@/components/form/Form/Form';
 import { Button } from '@/components/ui/button';
-import { authClient, AuthController } from '@/lib/auth';
+import { authClient } from '@/lib/auth';
 import { MobxForm } from '@/lib/form/mobxForm';
-import { AuthModel } from '@/modules/auth/models/auth';
+import { AuthByEmailModel } from '@/modules/auth/models/auth';
+import { AuthService } from '@/modules/auth/services/authService';
 
 export const SignInForm: FC = observer(() => {
   const [form] = useState(
     () =>
-      new MobxForm<AuthModel>({
+      new MobxForm<AuthByEmailModel>({
         abortController: new AbortController(),
         defaultValues: {
           email: '',
@@ -20,16 +21,13 @@ export const SignInForm: FC = observer(() => {
         },
         lazyUpdates: false,
         onSubmit: async (data) =>
-          await new AuthController(authClient).signInWithEmailAndPassword(
-            data.email,
-            data.password,
-          ),
-        resolver: classValidatorResolver(AuthModel),
+          await new AuthService(authClient).signInWithEmailAndPassword(data),
+        resolver: classValidatorResolver(AuthByEmailModel),
       }),
   );
 
   return (
-    <Form<AuthModel> className={'flex flex-col gap-4'} methods={form}>
+    <Form<AuthByEmailModel> className={'flex flex-col gap-4'} methods={form}>
       <TextField
         label={'Email'}
         name={'email'}

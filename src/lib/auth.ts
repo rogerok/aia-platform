@@ -22,30 +22,3 @@ export const authClient = createAuthClient({
 });
 
 export type AuthClientType = typeof authClient;
-
-export class AuthController {
-  client: AuthClientType;
-
-  constructor(client: AuthClientType) {
-    this.client = client;
-  }
-
-  async signInWithEmailAndPassword(
-    email: string,
-    password: string,
-    onSuccess?: () => void,
-    onError?: () => void,
-  ) {
-    await this.client.signIn.email(
-      { email, password },
-      {
-        onError: (response) => {
-          onError?.();
-        },
-        onSuccess: (response) => {
-          onSuccess?.();
-        },
-      },
-    );
-  }
-}

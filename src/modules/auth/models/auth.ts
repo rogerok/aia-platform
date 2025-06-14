@@ -1,6 +1,6 @@
 import { IsEmail, MinLength } from 'class-validator';
 
-export class AuthModel {
+export class AuthByEmailModel {
   @IsEmail()
   email: string;
 
