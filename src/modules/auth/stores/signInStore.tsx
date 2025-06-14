@@ -1,3 +1,5 @@
+'use client';
+
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { makeAutoObservable } from 'mobx';
 
@@ -15,14 +17,21 @@ class SignInStore {
       password: '',
     },
     lazyUpdates: false,
-    onSubmit: this.submitForm,
+    onSubmit: (data) => this.submitForm(data),
     resolver: classValidatorResolver(AuthByEmailModel),
   });
 
   authService: AuthService;
 
   constructor(authService: AuthService) {
-    makeAutoObservable(this);
+    makeAutoObservable(
+      this,
+      {},
+      {
+        autoBind: true,
+      },
+    );
+
     this.authService = authService;
   }
 
@@ -31,9 +40,10 @@ class SignInStore {
   }
 }
 
-const { createProvider, useStore: useSignInStore } =
-  createMobxContext<SignInStore>();
+const { createProvider, useStore } = createMobxContext<SignInStore>();
 
-const SignInStoreProvider = createProvider(
+export const useSignInStore = useStore;
+
+export const SignInStoreProvider = createProvider(
   () => new SignInStore(new AuthService(authClient)),
 );
