@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 
 import { Geist, Geist_Mono } from 'next/font/google';
-
-import { RootStoreProvider } from '@/lib/store-adapter/store';
-import './globals.css';
 import { FC, ReactNode } from 'react';
+
+import './globals.css';
 
 const geistSans = Geist({
   subsets: ['latin'],
@@ -31,7 +30,7 @@ const RootLayout: FC<RootLayoutProps> = (props) => {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RootStoreProvider>{props.children}</RootStoreProvider>
+        {props.children}
       </body>
     </html>
   );
