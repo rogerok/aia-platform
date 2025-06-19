@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 
 import { authClient } from '@/lib/auth';
 import { MobxForm } from '@/lib/form/mobxForm';
-import { createMobxContext } from '@/lib/store-adapter/store';
+import { createMobxContext } from '@/lib/store-adapter/storeAdapter';
 import { AuthByEmailModel } from '@/modules/auth/models/auth';
 import { AuthService } from '@/modules/auth/services/authService';
 
@@ -15,15 +15,22 @@ class SignInStore {
       password: '',
     },
     lazyUpdates: false,
-    onSubmit: this.submitForm,
+    onSubmit: (data) => this.submitForm(data),
     resolver: classValidatorResolver(AuthByEmailModel),
   });
 
   authService: AuthService;
 
   constructor(authService: AuthService) {
-    makeAutoObservable(this);
     this.authService = authService;
+
+    makeAutoObservable(
+      this,
+      {},
+      {
+        autoBind: true,
+      },
+    );
   }
 
   async submitForm(data: AuthByEmailModel): Promise<void> {
@@ -31,9 +38,10 @@ class SignInStore {
   }
 }
 
-const { createProvider, useStore: useSignInStore } =
-  createMobxContext<SignInStore>();
+const { createProvider, useStore } = createMobxContext<SignInStore>();
 
-const SignInStoreProvider = createProvider(
+export const useSignInStore = useStore;
+
+export const SignInStoreProvider = createProvider(
   () => new SignInStore(new AuthService(authClient)),
 );
