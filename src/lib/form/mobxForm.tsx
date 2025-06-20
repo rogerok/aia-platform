@@ -247,26 +247,37 @@ export class MobxForm<
     // makeLoggable(this);
   }
 
+  setFormSubmitting(submitting: boolean): void {
+    this.submitting = submitting;
+  }
+
+  setFormSubmitted(submitted: boolean): void {
+    this.submitted = submitted;
+  }
+  setFormSubmitSuccessful(successful: boolean): void {
+    this.submitSuccessful = successful;
+  }
+
   submit(e?: BaseSyntheticEvent) {
-    this.submitting = true;
-    this.submitted = false;
-    this.submitSuccessful = false;
+    this.setFormSubmitting.bind(this)(true);
+    this.setFormSubmitted(false);
+    this.setFormSubmitSuccessful(false);
     return new Promise<TTransformedValues>((resolve, reject) => {
       this.originalForm.handleSubmit(
         async (data, event) => {
           await this.config.onSubmit?.(data, event);
           resolve(data);
-          this.submitSuccessful = true;
+          this.setFormSubmitSuccessful(true);
         },
         async (errors, event) => {
           await this.config.onSubmitFailed?.(errors, event);
           reject(errors);
-          this.submitSuccessful = false;
+          this.setFormSubmitSuccessful(false);
         },
       )(e);
     }).finally(() => {
-      this.submitting = false;
-      this.isSubmitted = true;
+      this.setFormSubmitting(false);
+      this.setFormSubmitted(true);
     });
   }
 
