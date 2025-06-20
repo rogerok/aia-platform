@@ -17,7 +17,7 @@ class SignInStore {
       password: '',
     },
     lazyUpdates: false,
-    onSubmit: (data) => this.submitForm(data),
+    onSubmit: this.submitForm.bind(this),
     resolver: classValidatorResolver(AuthByEmailModel),
   });
   authService: AuthService;
