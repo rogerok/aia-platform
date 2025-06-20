@@ -26,8 +26,6 @@ export const SignInForm: FC = observer(() => {
     return () => dispose();
   }, [router]);
 
-  console.log(store.form.isSubmitting);
-
   return (
     <Form<AuthByEmailModel>
       className={'flex flex-col gap-4'}
@@ -48,7 +46,7 @@ export const SignInForm: FC = observer(() => {
 
       <Button
         className={'w-full'}
-        disabled={store.form.isSubmitting}
+        disabled={store.form.submitting}
         type={'submit'}
       >
         Submit
