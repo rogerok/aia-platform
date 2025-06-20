@@ -1,5 +1,7 @@
+'use client';
+
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 
 import { authClient } from '@/lib/auth';
 import { MobxForm } from '@/lib/form/mobxForm';
@@ -18,8 +20,9 @@ class SignInStore {
     onSubmit: (data) => this.submitForm(data),
     resolver: classValidatorResolver(AuthByEmailModel),
   });
-
   authService: AuthService;
+  isFormSubmitSuccess = false;
+  error: string | undefined;
 
   constructor(authService: AuthService) {
     this.authService = authService;
@@ -34,7 +37,15 @@ class SignInStore {
   }
 
   async submitForm(data: AuthByEmailModel): Promise<void> {
-    await this.authService.signInWithEmailAndPassword(data);
+    const resp = await this.authService.signInWithEmailAndPassword(data);
+
+    runInAction(() => {
+      if (resp.data) {
+        this.isFormSubmitSuccess = true;
+      } else {
+        this.error = resp.error.message;
+      }
+    });
   }
 }
 

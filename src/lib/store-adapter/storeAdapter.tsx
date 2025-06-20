@@ -47,6 +47,7 @@ export function createMobxContext<StoreType>() {
   };
 
   return {
+    Context,
     createProvider,
     useStore,
     useStoreHydration,
