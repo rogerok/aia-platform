@@ -1,11 +1,11 @@
 'use client';
 
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 
 import { authClient } from '@/lib/auth';
 import { MobxForm } from '@/lib/form/mobxForm';
-import { createMobxContext } from '@/lib/store-adapter/store';
+import { createMobxContext } from '@/lib/store-adapter/storeAdapter';
 import { AuthByEmailModel } from '@/modules/auth/models/auth';
 import { AuthService } from '@/modules/auth/services/authService';
 
@@ -17,13 +17,16 @@ class SignInStore {
       password: '',
     },
     lazyUpdates: false,
-    onSubmit: (data) => this.submitForm(data),
+    onSubmit: this.submitForm.bind(this),
     resolver: classValidatorResolver(AuthByEmailModel),
   });
-
   authService: AuthService;
+  isFormSubmitSuccess = false;
+  error: string | undefined;
 
   constructor(authService: AuthService) {
+    this.authService = authService;
+
     makeAutoObservable(
       this,
       {},
@@ -31,12 +34,18 @@ class SignInStore {
         autoBind: true,
       },
     );
-
-    this.authService = authService;
   }
 
   async submitForm(data: AuthByEmailModel): Promise<void> {
-    await this.authService.signInWithEmailAndPassword(data);
+    const resp = await this.authService.signInWithEmailAndPassword(data);
+
+    runInAction(() => {
+      if (resp.data) {
+        this.isFormSubmitSuccess = true;
+      } else {
+        this.error = resp.error.message;
+      }
+    });
   }
 }
 

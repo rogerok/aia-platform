@@ -8,18 +8,7 @@ export class AuthService {
     this.client = client;
   }
 
-  async signInWithEmailAndPassword(
-    credentials: AuthByEmailModel,
-    onSuccess?: () => void,
-    onError?: () => void,
-  ) {
-    await this.client.signIn.email(credentials, {
-      onError: (response) => {
-        onError?.();
-      },
-      onSuccess: (response) => {
-        onSuccess?.();
-      },
-    });
+  async signInWithEmailAndPassword(credentials: AuthByEmailModel) {
+    return await this.client.signIn.email(credentials);
   }
 }

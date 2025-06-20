@@ -1,6 +1,9 @@
 'use client';
 
+import { enableStaticRendering } from 'mobx-react-lite';
 import { createContext, FC, ReactNode, useContext, useRef } from 'react';
+
+enableStaticRendering(typeof window === 'undefined');
 
 export function createMobxContext<StoreType>() {
   const Context = createContext<StoreType | null>(null);
@@ -44,6 +47,7 @@ export function createMobxContext<StoreType>() {
   };
 
   return {
+    Context,
     createProvider,
     useStore,
     useStoreHydration,
