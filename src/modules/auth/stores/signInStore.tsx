@@ -11,6 +11,9 @@ import { AuthByEmailModel } from '@/modules/auth/models/auth';
 import { AuthService } from '@/modules/auth/services/authService';
 
 class SignInStore {
+  authService: AuthService;
+  routerStore: RouterStore;
+
   form = new MobxForm<AuthByEmailModel>({
     abortController: new AbortController(),
     defaultValues: {
@@ -21,10 +24,8 @@ class SignInStore {
     onSubmit: this.submitForm.bind(this),
     resolver: classValidatorResolver(AuthByEmailModel),
   });
-  authService: AuthService;
-  isFormSubmitSuccess = false;
+  loading: boolean = false;
   error: string | undefined;
-  routerStore: RouterStore;
 
   constructor(authService: AuthService, routerStore: RouterStore) {
     this.authService = authService;
@@ -40,17 +41,18 @@ class SignInStore {
   }
 
   async submitForm(data: AuthByEmailModel): Promise<void> {
+    this.loading = true;
     const resp = await this.authService.signInWithEmailAndPassword(data);
 
     if (resp.data) {
-      runInAction(() => {
-        this.isFormSubmitSuccess = true;
-      });
-
       this.routerStore.navigate('/sign-up');
     } else {
-      this.error = resp.error.message;
+      runInAction(() => {
+        this.error = resp.error.message;
+      });
     }
+
+    this.loading = false;
   }
 }
 

@@ -28,11 +28,7 @@ export const SignInForm: FC = observer(() => {
         type={'password'}
       />
 
-      <Button
-        className={'w-full'}
-        disabled={store.form.submitting}
-        type={'submit'}
-      >
+      <Button className={'w-full'} disabled={store.loading} type={'submit'}>
         Submit
       </Button>
     </Form>
