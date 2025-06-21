@@ -1,7 +1,14 @@
 'use client';
 
 import { enableStaticRendering } from 'mobx-react-lite';
-import { createContext, FC, ReactNode, useContext, useRef } from 'react';
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
 
 enableStaticRendering(typeof window === 'undefined');
 
@@ -18,14 +25,28 @@ export function createMobxContext<StoreType>() {
     return value;
   };
 
+  // const useStoreHydration = (fn: (store: StoreType) => void) => {
+  //   const store = useStore();
+  //   const initializationRef = useRef(false);
+  //
+  //   if (!initializationRef.current) {
+  //     fn(store);
+  //     initializationRef.current = true;
+  //   }
+  //
+  //   return store;
+  // };
+
   const useStoreHydration = (fn: (store: StoreType) => void) => {
     const store = useStore();
-    const initializationRef = useRef(false);
+    const calledRef = useRef(false);
 
-    if (!initializationRef.current) {
-      fn(store);
-      initializationRef.current = true;
-    }
+    useEffect(() => {
+      if (!calledRef.current) {
+        fn(store);
+        calledRef.current = true;
+      }
+    }, [store]);
 
     return store;
   };
@@ -47,7 +68,6 @@ export function createMobxContext<StoreType>() {
   };
 
   return {
-    Context,
     createProvider,
     useStore,
     useStoreHydration,

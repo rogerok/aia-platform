@@ -9,10 +9,7 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { routes } from '@/lib/constants/routes';
-import {
-  SignInStoreProvider,
-  useSignInStore,
-} from '@/modules/auth/stores/signInStore';
+import { useSignInStore } from '@/modules/auth/stores/signInStore';
 import { SignInForm } from '@/modules/auth/ui/signIn/SignInForm';
 
 export const SignIn = observer(() => {

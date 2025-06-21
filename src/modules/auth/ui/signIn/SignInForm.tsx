@@ -1,7 +1,5 @@
-import { reaction } from 'mobx';
 import { observer } from 'mobx-react-lite';
-import { useRouter } from 'next/navigation';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 import { TextField } from '@/components/form/fields/TextField/TextField';
 import { Form } from '@/components/form/Form/Form';
@@ -11,20 +9,6 @@ import { useSignInStore } from '@/modules/auth/stores/signInStore';
 
 export const SignInForm: FC = observer(() => {
   const store = useSignInStore();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    const dispose = reaction(
-      () => store.isFormSubmitSuccess,
-      (isSuccess: boolean) => {
-        if (isSuccess) {
-          router.push('/sign-up');
-        }
-      },
-    );
-    return () => dispose();
-  }, [router]);
 
   return (
     <Form<AuthByEmailModel>

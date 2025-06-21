@@ -5,6 +5,9 @@ import { FC, ReactNode } from 'react';
 
 import './globals.css';
 
+import { AppInitializer } from '@/app/AppInitializer';
+import { RouterProvider } from '@/lib/stores/routerStore';
+
 const geistSans = Geist({
   subsets: ['latin'],
   variable: '--font-geist-sans',
@@ -30,7 +33,9 @@ const RootLayout: FC<RootLayoutProps> = (props) => {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {props.children}
+        <RouterProvider>
+          <AppInitializer>{props.children}</AppInitializer>
+        </RouterProvider>
       </body>
     </html>
   );
