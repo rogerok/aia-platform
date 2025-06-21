@@ -99,6 +99,12 @@ export class MobxForm<
   disabled: boolean = false;
   submitCount: number = 0;
   /**
+   * Custom properties for async control form's submitting state - submitting,submitted, submitSuccessful,
+   */
+  submitting: boolean = false;
+  submitted = false;
+  submitSuccessful = false;
+  /**
    * If you want to change this property
    * Use {resetForm} method
    */
@@ -214,6 +220,9 @@ export class MobxForm<
     observable.ref(this, 'disabled');
     observable.ref(this, 'submitCount');
     observable.ref(this, 'isReady');
+    observable.ref(this, 'submitting');
+    observable.ref(this, 'submitted');
+    observable.ref(this, 'submitSuccessful');
     observable.deep(this, 'defaultValues');
     observable.deep(this, 'dirtyFields');
     observable.deep(this, 'touchedFields');
@@ -234,20 +243,41 @@ export class MobxForm<
       // @ts-ignore
       this.data = null;
     });
+
+    // makeLoggable(this);
+  }
+
+  setFormSubmitting(submitting: boolean): void {
+    this.submitting = submitting;
+  }
+
+  setFormSubmitted(submitted: boolean): void {
+    this.submitted = submitted;
+  }
+  setFormSubmitSuccessful(successful: boolean): void {
+    this.submitSuccessful = successful;
   }
 
   submit(e?: BaseSyntheticEvent) {
+    this.setFormSubmitting.bind(this)(true);
+    this.setFormSubmitted(false);
+    this.setFormSubmitSuccessful(false);
     return new Promise<TTransformedValues>((resolve, reject) => {
       this.originalForm.handleSubmit(
-        (data, event) => {
-          this.config.onSubmit?.(data, event);
+        async (data, event) => {
+          await this.config.onSubmit?.(data, event);
           resolve(data);
+          this.setFormSubmitSuccessful(true);
         },
-        (errors, event) => {
-          this.config.onSubmitFailed?.(errors, event);
+        async (errors, event) => {
+          await this.config.onSubmitFailed?.(errors, event);
           reject(errors);
+          this.setFormSubmitSuccessful(false);
         },
       )(e);
+    }).finally(() => {
+      this.setFormSubmitting(false);
+      this.setFormSubmitted(true);
     });
   }
 

@@ -1,20 +1,16 @@
 'use client';
 
-import { makeAutoObservable } from 'mobx';
-import { createContext, FC, ReactNode, useContext, useRef } from 'react';
+import { enableStaticRendering } from 'mobx-react-lite';
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
 
-class TestStore {
-  count = 1;
-  requestId = Math.random().toString(36).slice(2);
-
-  constructor() {
-    makeAutoObservable(this);
-  }
-
-  increment = (): void => {
-    this.count++;
-  };
-}
+enableStaticRendering(typeof window === 'undefined');
 
 export function createMobxContext<StoreType>() {
   const Context = createContext<StoreType | null>(null);
@@ -29,14 +25,28 @@ export function createMobxContext<StoreType>() {
     return value;
   };
 
+  // const useStoreHydration = (fn: (store: StoreType) => void) => {
+  //   const store = useStore();
+  //   const initializationRef = useRef(false);
+  //
+  //   if (!initializationRef.current) {
+  //     fn(store);
+  //     initializationRef.current = true;
+  //   }
+  //
+  //   return store;
+  // };
+
   const useStoreHydration = (fn: (store: StoreType) => void) => {
     const store = useStore();
-    const initializationRef = useRef(false);
+    const calledRef = useRef(false);
 
-    if (!initializationRef.current) {
-      fn(store);
-      initializationRef.current = true;
-    }
+    useEffect(() => {
+      if (!calledRef.current) {
+        fn(store);
+        calledRef.current = true;
+      }
+    }, [store]);
 
     return store;
   };
@@ -63,9 +73,3 @@ export function createMobxContext<StoreType>() {
     useStoreHydration,
   };
 }
-
-const { createProvider, useStore } = createMobxContext<TestStore>();
-
-export const useRootStore = useStore;
-
-export const RootStoreProvider = createProvider(() => new TestStore());

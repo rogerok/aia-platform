@@ -9,19 +9,24 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { routes } from '@/lib/constants/routes';
+import { useSignInStore } from '@/modules/auth/stores/signInStore';
 import { SignInForm } from '@/modules/auth/ui/signIn/SignInForm';
 
 export const SignIn = observer(() => {
+  const store = useSignInStore();
+
   return (
     <Card className={'flex flex-col gap-6 py-0'}>
       <CardContent className={'grid h-full gap-6 p-0 md:grid-cols-2'}>
         <div className={'flex flex-col gap-4 p-4'}>
           <p className={'text-center text-3xl font-semibold'}>Log in</p>
           <SignInForm />
-          <Alert variant={'warn'}>
-            <OctagonAlert />
-            <AlertTitle>Error</AlertTitle>
-          </Alert>
+          {store.error && (
+            <Alert variant={'warn'}>
+              <OctagonAlert className={'!text-destructive h-4 w-4'} />
+              <AlertTitle>{store.error}</AlertTitle>
+            </Alert>
+          )}
 
           <div
             className={

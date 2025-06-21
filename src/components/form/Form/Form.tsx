@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { FormEvent, ReactNode } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import { FormProvider } from '@/lib/form/formContext2';
+import { FormProvider } from '@/lib/form/formContext';
 import { MobxForm } from '@/lib/form/mobxForm';
 import { cn } from '@/lib/utils';
 
