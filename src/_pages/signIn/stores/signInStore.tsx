@@ -4,9 +4,9 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { AuthByEmailModel } from '@/_pages/signIn/models/auth';
-import { AuthService } from '@/_pages/signIn/services/authService';
 import { authClient } from '@/lib/auth';
 import { MobxForm } from '@/lib/form/mobxForm';
+import { AuthService } from '@/lib/services/authService';
 import { createMobxContext } from '@/lib/store-adapter/storeAdapter';
 import { RouterStore, useRouterStore } from '@/lib/stores/routerStore';
 

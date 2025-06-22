@@ -1,42 +1,35 @@
 'use client';
 
-import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { OctagonAlert } from 'lucide-react';
-import { store } from 'next/dist/build/output/store';
+import { observer } from 'mobx-react-lite';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC, useState } from 'react';
 
 import { SignUpModel } from '@/_pages/signUp/models/signUp';
+import { SignUpStore } from '@/_pages/signUp/store/signUpStore';
 import { TextField } from '@/components/form/fields/TextField/TextField';
 import { Form } from '@/components/form/Form/Form';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { authClient } from '@/lib/auth';
 import { routes } from '@/lib/constants/routes';
-import { MobxForm } from '@/lib/form/mobxForm';
+import { AuthService } from '@/lib/services/authService';
 
-export const SignUp: FC = () => {
-  const [form] = useState(
-    () =>
-      new MobxForm<SignUpModel>({
-        abortController: new AbortController(),
-        defaultValues: {
-          email: '',
-          password: '',
-        },
-        lazyUpdates: false,
-        onSubmit: (data) => console.log(data),
-        resolver: classValidatorResolver(SignUpModel),
-      }),
-  );
+export const SignUp: FC = observer(() => {
+  const [store] = useState(() => new SignUpStore(new AuthService(authClient)));
 
   return (
     <Card className={'flex flex-col gap-6 py-0'}>
       <CardContent className={'grid h-full gap-6 p-0 md:grid-cols-2'}>
         <div className={'flex flex-col gap-4 p-4'}>
-          <p className={'text-center text-3xl font-semibold'}>Log in</p>
-          <Form<SignUpModel> className={'flex flex-col gap-4'} methods={form}>
+          <p className={'text-center text-3xl font-semibold'}>Sign up</p>
+          <Form<SignUpModel>
+            className={'flex flex-col gap-4'}
+            methods={store.form}
+          >
+            <TextField label={'Name'} name={'name'} placeholder={'Name'} />
             <TextField
               label={'Email'}
               name={'email'}
@@ -50,14 +43,14 @@ export const SignUp: FC = () => {
               type={'password'}
             />
             <TextField
-              label={'Password confirm'}
+              label={'Confirm password'}
               name={'passwordConfirm'}
-              placeholder={'Password confirm'}
+              placeholder={'Confirm password'}
               type={'password'}
             />
             <Button
               className={'w-full'}
-              disabled={store.loading}
+              disabled={store.form.submitting}
               type={'submit'}
             >
               Submit
@@ -69,25 +62,13 @@ export const SignUp: FC = () => {
               <AlertTitle>{store.error}</AlertTitle>
             </Alert>
           )}
-
-          <div
-            className={
-              'bg-card text-card-foreground left:0 relative flex flex-col items-center gap-2 before:absolute before:-top-1 before:h-0.5 before:w-full before:bg-gray-300'
-            }
-          >
-            <span>Or continue with</span>
-            <div className={'flex w-full justify-center gap-1'}>
-              <Button variant={'outline'}>Google</Button>
-              <Button variant={'outline'}>GitHub</Button>
-            </div>
-          </div>
           <div>
-            Do not have an account?{' '}
+            Have an account?{' '}
             <Link
               className={'underline underline-offset-4'}
-              href={routes.signUp()}
+              href={routes.signIn()}
             >
-              Create
+              Sign in
             </Link>
           </div>
         </div>
@@ -110,4 +91,4 @@ export const SignUp: FC = () => {
       </CardContent>
     </Card>
   );
-};
+});
