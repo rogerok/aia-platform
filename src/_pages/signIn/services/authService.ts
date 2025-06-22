@@ -1,5 +1,5 @@
+import { AuthByEmailModel } from '@/_pages/signIn/models/auth';
 import { AuthClientType } from '@/lib/auth';
-import { AuthByEmailModel } from '@/modules/auth/models/auth';
 
 export class AuthService {
   client: AuthClientType;

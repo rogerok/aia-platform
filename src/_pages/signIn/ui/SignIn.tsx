@@ -5,12 +5,12 @@ import { observer } from 'mobx-react-lite';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { useSignInStore } from '@/_pages/signIn/stores/signInStore';
+import { SignInForm } from '@/_pages/signIn/ui/SignInForm';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { routes } from '@/lib/constants/routes';
-import { useSignInStore } from '@/modules/auth/stores/signInStore';
-import { SignInForm } from '@/modules/auth/ui/signIn/SignInForm';
 
 export const SignIn = observer(() => {
   const store = useSignInStore();

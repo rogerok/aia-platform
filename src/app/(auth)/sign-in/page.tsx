@@ -1,5 +1,5 @@
-import { SignInStoreProvider } from '@/modules/auth/stores/signInStore';
-import { SignIn } from '@/modules/auth/ui/signIn/SignIn';
+import { SignInStoreProvider } from '@/_pages/signIn/stores/signInStore';
+import { SignIn } from '@/_pages/signIn/ui/SignIn';
 
 const Page = () => {
   return (
