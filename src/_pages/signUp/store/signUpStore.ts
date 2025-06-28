@@ -11,8 +11,8 @@ export class SignUpStore {
     defaultValues: {
       email: '',
       name: '',
-      password: 'Password1!',
-      passwordConfirm: 'Password1!',
+      password: '',
+      passwordConfirm: '',
     },
     lazyUpdates: false,
     onSubmit: this.submitForm.bind(this),

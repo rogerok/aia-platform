@@ -12,7 +12,7 @@ import {
 
 enableStaticRendering(typeof window === 'undefined');
 
-export function createMobxContext<StoreType>() {
+export function createStoreContext<StoreType>() {
   const Context = createContext<StoreType | null>(null);
 
   const useStore = (): StoreType => {

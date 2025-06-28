@@ -26,4 +26,8 @@ export class AuthService {
       password: data.password,
     });
   }
+
+  signOut() {
+    return this.client.signOut();
+  }
 }

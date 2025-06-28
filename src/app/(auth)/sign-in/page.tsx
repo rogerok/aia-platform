@@ -1,12 +1,10 @@
-import { SignInStoreProvider } from '@/_pages/signIn/stores/signInStore';
 import { SignIn } from '@/_pages/signIn/ui/SignIn';
+import { handleIsAuth } from '@/lib/authActions';
 
-const Page = () => {
-  return (
-    <SignInStoreProvider>
-      <SignIn />
-    </SignInStoreProvider>
-  );
+const Page = async () => {
+  await handleIsAuth();
+
+  return <SignIn />;
 };
 
 export default Page;

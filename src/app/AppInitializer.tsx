@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { FC, ReactNode } from 'react';
 
-import { useRouterStoreHydration } from '@/lib/stores/routerStore';
+import { useRootStoreHydration } from '@/lib/stores/rootStore';
 
 interface AppInitializerProps {
   children: ReactNode;
@@ -11,7 +11,8 @@ interface AppInitializerProps {
 
 export const AppInitializer: FC<AppInitializerProps> = (props) => {
   const router = useRouter();
-  useRouterStoreHydration((store) => store.init(router));
+
+  useRootStoreHydration((store) => store.router.init(router));
 
   return <>{props.children}</>;
 };
