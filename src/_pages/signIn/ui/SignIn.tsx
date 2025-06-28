@@ -35,8 +35,18 @@ export const SignIn = observer(() => {
           >
             <span>Or continue with</span>
             <div className={'flex w-full justify-center gap-1'}>
-              <Button variant={'outline'}>Google</Button>
-              <Button variant={'outline'}>GitHub</Button>
+              <Button
+                onClick={() => store.signInBySocial('google')}
+                variant={'outline'}
+              >
+                Google
+              </Button>
+              <Button
+                onClick={() => store.signInBySocial('github')}
+                variant={'outline'}
+              >
+                GitHub
+              </Button>
             </div>
           </div>
           <div>
