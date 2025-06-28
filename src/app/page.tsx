@@ -1,3 +1,4 @@
+import { Home } from '@/_pages/home/ui/Home';
 import { handleIsNotAuth } from '@/lib/authActions';
 
 const Page = async () => {
@@ -5,7 +6,7 @@ const Page = async () => {
 
   return (
     <div className={'flex border-2 text-4xl font-bold text-gray-600'}>
-      hello
+      <Home />
     </div>
   );
 };

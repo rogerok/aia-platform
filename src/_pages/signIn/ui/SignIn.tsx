@@ -5,15 +5,15 @@ import { observer } from 'mobx-react-lite';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { useSignInStore } from '@/_pages/signIn/stores/signInStore';
 import { SignInForm } from '@/_pages/signIn/ui/SignInForm';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { routes } from '@/lib/constants/routes';
+import { useRootStore } from '@/lib/stores/rootStore';
 
 export const SignIn = observer(() => {
-  const store = useSignInStore();
+  const { authStore } = useRootStore();
 
   return (
     <Card className={'flex flex-col gap-6 py-0'}>
@@ -21,10 +21,10 @@ export const SignIn = observer(() => {
         <div className={'flex flex-col gap-4 p-4'}>
           <p className={'text-center text-3xl font-semibold'}>Log in</p>
           <SignInForm />
-          {store.error && (
+          {authStore.error && (
             <Alert variant={'warn'}>
               <OctagonAlert className={'!text-destructive h-4 w-4'} />
-              <AlertTitle>{store.error}</AlertTitle>
+              <AlertTitle>{authStore.error}</AlertTitle>
             </Alert>
           )}
 
@@ -36,13 +36,15 @@ export const SignIn = observer(() => {
             <span>Or continue with</span>
             <div className={'flex w-full justify-center gap-1'}>
               <Button
-                onClick={() => store.signInBySocial('google')}
+                disabled={authStore.loading}
+                onClick={() => authStore.signInBySocial('google')}
                 variant={'outline'}
               >
                 Google
               </Button>
               <Button
-                onClick={() => store.signInBySocial('github')}
+                disabled={authStore.loading}
+                onClick={() => authStore.signInBySocial('github')}
                 variant={'outline'}
               >
                 GitHub

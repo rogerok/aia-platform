@@ -4,14 +4,13 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { AuthByEmailModel } from '@/_pages/signIn/models/auth';
-import { authClient, AuthProvidersType } from '@/lib/auth';
+import { AuthProvidersType } from '@/lib/auth';
 import { routes } from '@/lib/constants/routes';
 import { MobxForm } from '@/lib/form/mobxForm';
 import { AuthService } from '@/lib/services/authService';
-import { createMobxContext } from '@/lib/store-adapter/storeAdapter';
-import { RouterStore, useRouterStore } from '@/lib/stores/routerStore';
+import { RouterStore } from '@/lib/stores/routerStore';
 
-class SignInStore {
+export class AuthStore {
   authService: AuthService;
   routerStore: RouterStore;
 
@@ -43,41 +42,49 @@ class SignInStore {
   }
 
   async submitForm(data: AuthByEmailModel): Promise<void> {
-    this.loading = true;
+    runInAction(() => {
+      this.loading = true;
+      this.error = undefined;
+    });
+
     const resp = await this.authService.signInWithEmailAndPassword(data);
 
-    if (resp.data) {
-      this.routerStore.navigate(routes.home());
-    } else {
-      runInAction(() => {
-        this.error = resp.error.message;
-      });
-    }
+    runInAction(() => {
+      this.loading = false;
 
-    this.loading = false;
+      if (resp.data) {
+        this.error = undefined;
+        this.routerStore.navigate(routes.home());
+      } else {
+        this.error = resp.error.message;
+      }
+    });
   }
 
   async signInBySocial(provider: AuthProvidersType): Promise<void> {
-    this.loading = true;
+    runInAction(() => {
+      this.loading = true;
+      this.error = undefined;
+    });
+
     const resp = await this.authService.signInBySocial(provider);
 
-    if (resp.data) {
-      this.routerStore.navigate('/');
-    } else {
-      runInAction(() => {
-        this.error = resp.error.message;
-      });
-    }
+    runInAction(() => {
+      this.loading = false;
 
-    this.loading = false;
+      if (resp.data) {
+        this.error = undefined;
+        this.routerStore.navigate(routes.home());
+      } else {
+        this.error = resp.error.message;
+      }
+    });
+  }
+
+  async signOut(): Promise<void> {
+    const resp = await this.authService.signOut();
+    if (resp.data) {
+      this.routerStore.navigate(routes.signIn());
+    }
   }
 }
-
-const { createProvider, useStore } = createMobxContext<SignInStore>();
-
-export const useSignInStore = useStore;
-
-export const SignInStoreProvider = createProvider(() => {
-  const routerStore = useRouterStore();
-  return new SignInStore(new AuthService(authClient), routerStore);
-});

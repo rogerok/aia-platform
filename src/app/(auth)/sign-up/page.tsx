@@ -1,6 +1,9 @@
 import { SignUp } from '@/_pages/signUp/ui/SignUp';
+import { handleIsAuth } from '@/lib/authActions';
 
-const Page = () => {
+const Page = async () => {
+  await handleIsAuth();
+
   return <SignUp />;
 };
 
