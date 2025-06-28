@@ -1,8 +1,10 @@
 import { defineConfig } from 'drizzle-kit';
 
+import { envs } from '@/lib/constants/envs';
+
 export default defineConfig({
   dbCredentials: {
-    url: process.env.NEXT_PUBLIC_DATABASE_URL!,
+    url: envs.dbURl,
   },
   dialect: 'postgresql',
   out: './migrations',

@@ -1,7 +1,5 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 
-if (!process.env.NEXT_PUBLIC_DATABASE_URL) {
-  throw new Error('DATABASE_URL does not exist');
-}
+import { envs } from '@/lib/constants/envs';
 
-export const db = drizzle(process.env.NEXT_PUBLIC_DATABASE_URL);
+export const db = drizzle(envs.dbURl);

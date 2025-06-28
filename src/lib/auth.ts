@@ -4,6 +4,7 @@ import { createAuthClient } from 'better-auth/react';
 
 import { db } from '@/db';
 import * as schema from '@/db/schemas/schema';
+import { envs } from '@/lib/constants/envs';
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -15,10 +16,16 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  socialProviders: {
+    github: {
+      clientId: envs.githubClientId,
+      clientSecret: envs.githubClientSecret!,
+    },
+  },
 });
 
 export const authClient = createAuthClient({
-  baseURL: process.env.BASE_URL,
+  baseURL: envs.baseUrl,
 });
 
 export type AuthClientType = typeof authClient;
