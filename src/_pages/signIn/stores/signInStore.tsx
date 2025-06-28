@@ -4,7 +4,8 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { AuthByEmailModel } from '@/_pages/signIn/models/auth';
-import { authClient } from '@/lib/auth';
+import { authClient, AuthProvidersType } from '@/lib/auth';
+import { routes } from '@/lib/constants/routes';
 import { MobxForm } from '@/lib/form/mobxForm';
 import { AuthService } from '@/lib/services/authService';
 import { createMobxContext } from '@/lib/store-adapter/storeAdapter';
@@ -46,7 +47,22 @@ class SignInStore {
     const resp = await this.authService.signInWithEmailAndPassword(data);
 
     if (resp.data) {
-      this.routerStore.navigate('/sign-up');
+      this.routerStore.navigate(routes.home());
+    } else {
+      runInAction(() => {
+        this.error = resp.error.message;
+      });
+    }
+
+    this.loading = false;
+  }
+
+  async signInBySocial(provider: AuthProvidersType): Promise<void> {
+    this.loading = true;
+    const resp = await this.authService.signInBySocial(provider);
+
+    if (resp.data) {
+      this.routerStore.navigate('/');
     } else {
       runInAction(() => {
         this.error = resp.error.message;

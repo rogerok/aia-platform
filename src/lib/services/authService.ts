@@ -1,6 +1,6 @@
 import { AuthByEmailModel } from '@/_pages/signIn/models/auth';
 import { SignUpModel } from '@/_pages/signUp/models/signUp';
-import { AuthClientType } from '@/lib/auth';
+import { AuthClientType, AuthProvidersType } from '@/lib/auth';
 
 export class AuthService {
   client: AuthClientType;
@@ -11,6 +11,12 @@ export class AuthService {
 
   signInWithEmailAndPassword(credentials: AuthByEmailModel) {
     return this.client.signIn.email(credentials);
+  }
+
+  signInBySocial(provider: AuthProvidersType) {
+    return this.client.signIn.social({
+      provider: provider,
+    });
   }
 
   signUp(data: SignUpModel) {

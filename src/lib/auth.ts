@@ -21,11 +21,30 @@ export const auth = betterAuth({
       clientId: envs.githubClientId,
       clientSecret: envs.githubClientSecret!,
     },
+    google: {
+      clientId: envs.googleClientId,
+      clientSecret: envs.googleClientSecret,
+    },
   },
 });
+
+export const authApi = auth.api;
 
 export const authClient = createAuthClient({
   baseURL: envs.baseUrl,
 });
 
 export type AuthClientType = typeof authClient;
+
+export type AuthBySocialParams = Parameters<
+  AuthClientType['signIn']['social']
+>[0];
+
+type AuthAllProvidersType = AuthBySocialParams extends { provider: infer P }
+  ? P
+  : never;
+
+export type AuthProvidersType = Extract<
+  AuthAllProvidersType,
+  'github' | 'google'
+>;
