@@ -243,8 +243,6 @@ export class MobxForm<
       // @ts-ignore
       this.data = null;
     });
-
-    // makeLoggable(this);
   }
 
   setFormSubmitting(submitting: boolean): void {
