@@ -34,6 +34,18 @@ export const authClient = createAuthClient({
   baseURL: envs.baseUrl,
 });
 
+export class AuthClient {
+  readonly instance: AuthClientType;
+
+  constructor(authClient: AuthClientType) {
+    this.instance = authClient;
+  }
+
+  get session() {
+    return this.instance.useSession();
+  }
+}
+
 export type AuthClientType = typeof authClient;
 
 export type AuthBySocialParams = Parameters<

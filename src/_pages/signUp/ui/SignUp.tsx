@@ -13,11 +13,12 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Logo } from '@/components/ui/custom/Logo/Logo';
-import { authClient } from '@/lib/auth';
 import { routes } from '@/lib/constants/routes';
 import { AuthService } from '@/lib/services/authService';
+import { useRootStore } from '@/lib/stores/rootStore';
 
 export const SignUp: FC = observer(() => {
+  const { authClient } = useRootStore();
   const [store] = useState(() => new SignUpStore(new AuthService(authClient)));
 
   return (
