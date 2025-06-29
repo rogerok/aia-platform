@@ -2,13 +2,13 @@
 
 import { OctagonAlert } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { SignInForm } from '@/_pages/signIn/ui/SignInForm';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Logo } from '@/components/ui/custom/Logo/Logo';
 import { routes } from '@/lib/constants/routes';
 import { useRootStore } from '@/lib/stores/rootStore';
 
@@ -66,13 +66,7 @@ export const SignIn = observer(() => {
             'relative hidden h-full w-full flex-col items-center justify-center gap-4 rounded-tr-xl rounded-br-xl bg-radial from-cyan-50 to-gray-900 md:flex'
           }
         >
-          <Image
-            alt={'logo'}
-            className={'h-[120px] w-[120px]'}
-            height={120}
-            src={'./logo.svg'}
-            width={120}
-          />
+          <Logo />
           <p className={'text-accent self-center text-2xl font-semibold'}>
             AIA Platform
           </p>

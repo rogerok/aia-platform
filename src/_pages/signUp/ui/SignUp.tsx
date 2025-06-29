@@ -2,7 +2,6 @@
 
 import { OctagonAlert } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
-import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC, useState } from 'react';
 
@@ -13,6 +12,7 @@ import { Form } from '@/components/form/Form/Form';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Logo } from '@/components/ui/custom/Logo/Logo';
 import { authClient } from '@/lib/auth';
 import { routes } from '@/lib/constants/routes';
 import { AuthService } from '@/lib/services/authService';
@@ -77,13 +77,7 @@ export const SignUp: FC = observer(() => {
             'relative hidden h-full w-full flex-col items-center justify-center gap-4 rounded-tr-xl rounded-br-xl bg-radial from-cyan-50 to-gray-900 md:flex'
           }
         >
-          <Image
-            alt={'logo'}
-            className={'h-[120px] w-[120px]'}
-            height={120}
-            src={'./logo.svg'}
-            width={120}
-          />
+          <Logo />
           <p className={'text-accent self-center text-2xl font-semibold'}>
             AIA Platform
           </p>
