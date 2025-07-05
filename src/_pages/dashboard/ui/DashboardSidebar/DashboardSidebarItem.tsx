@@ -2,7 +2,7 @@
 import { usePathname } from 'next/navigation';
 import { FC, ReactNode } from 'react';
 
-import { LinkComponent } from '@/components/ui/custom/LinkComponent/LinkComponent';
+import { LinkComponent } from '@/components/custom/LinkComponent/LinkComponent';
 import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 

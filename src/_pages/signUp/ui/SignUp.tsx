@@ -7,12 +7,12 @@ import React, { FC, useState } from 'react';
 
 import { SignUpModel } from '@/_pages/signUp/models/signUp';
 import { SignUpStore } from '@/_pages/signUp/store/signUpStore';
+import { Logo } from '@/components/custom/Logo/Logo';
 import { TextField } from '@/components/form/fields/TextField/TextField';
 import { Form } from '@/components/form/Form/Form';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Logo } from '@/components/ui/custom/Logo/Logo';
 import { routes } from '@/lib/constants/routes';
 import { AuthService } from '@/lib/services/authService';
 import { useRootStore } from '@/lib/stores/rootStore';

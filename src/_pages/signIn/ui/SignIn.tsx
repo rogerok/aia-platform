@@ -5,10 +5,10 @@ import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
 
 import { SignInForm } from '@/_pages/signIn/ui/SignInForm';
+import { Logo } from '@/components/custom/Logo/Logo';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Logo } from '@/components/ui/custom/Logo/Logo';
 import { routes } from '@/lib/constants/routes';
 import { useRootStore } from '@/lib/stores/rootStore';
 

@@ -3,8 +3,8 @@ import { FC } from 'react';
 
 import { DashboardSidebarItem } from '@/_pages/dashboard/ui/DashboardSidebar/DashboardSidebarItem';
 import { DashboardUserButton } from '@/_pages/dashboard/ui/DashboardUserButton/DashboardUserButton';
-import { LinkComponent } from '@/components/ui/custom/LinkComponent/LinkComponent';
-import { Logo } from '@/components/ui/custom/Logo/Logo';
+import { LinkComponent } from '@/components/custom/LinkComponent/LinkComponent';
+import { Logo } from '@/components/custom/Logo/Logo';
 import {
   Sidebar,
   SidebarContent,
