@@ -29,9 +29,6 @@ export class AuthStore {
   error: string | undefined;
 
   constructor(authService: AuthService, routerStore: RouterStore) {
-    this.authService = authService;
-    this.routerStore = routerStore;
-
     makeAutoObservable(
       this,
       {},
@@ -39,6 +36,9 @@ export class AuthStore {
         autoBind: true,
       },
     );
+
+    this.authService = authService;
+    this.routerStore = routerStore;
   }
 
   async submitForm(data: AuthByEmailModel): Promise<void> {
@@ -86,5 +86,9 @@ export class AuthStore {
     if (resp.data) {
       this.routerStore.navigate(routes.signIn());
     }
+  }
+
+  getSession() {
+    return this.authService.useSession().data;
   }
 }

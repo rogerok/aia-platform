@@ -7,19 +7,32 @@ import { authApi } from '@/lib/auth';
 import { routes } from '@/lib/constants/routes';
 
 const getSession = async () => {
-  return await authApi.getSession({
-    headers: await headers(),
-  });
+  let resp;
+
+  try {
+    resp = await authApi.getSession({
+      headers: await headers(),
+    });
+  } catch (e) {
+    // TODO: implement errors handling
+    console.log(e);
+  }
+
+  return resp;
 };
 
 export async function handleIsNotAuth(route = routes.signIn()) {
-  if (!(await getSession())) {
+  const resp = await getSession();
+
+  if (!resp) {
     redirect(route);
   }
 }
 
 export async function handleIsAuth(route = routes.home()) {
-  if (await getSession()) {
+  const resp = await getSession();
+
+  if (!!resp) {
     redirect(route);
   }
 }
