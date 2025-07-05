@@ -30,4 +30,8 @@ export class AuthService {
   signOut() {
     return this.client.instance.signOut();
   }
+
+  useSession() {
+    return this.client.instance.useSession();
+  }
 }

@@ -15,7 +15,7 @@ interface GenerateAvatarRules {
 const ruleData: GenerateAvatarRules[] = [
   {
     action: (firstName, lastName) =>
-      `${firstName?.charAt(0)}${lastName?.charAt(0)}`,
+      `${firstName!.charAt(0)}${lastName!.charAt(0)}`,
     firstName: true,
     lastName: true,
   },
@@ -44,9 +44,9 @@ const avatarVariants = cva(
     },
     variants: {
       size: {
-        lg: 'h-[48] w-[48]',
-        md: 'h-[32] w-[32]',
-        sm: 'h-[24] w-[24]',
+        lg: 'size-12',
+        md: 'size-9',
+        sm: 'size-6',
       },
     },
   },
@@ -73,14 +73,15 @@ interface GeneratedAvatarProps {
 }
 
 export const GeneratedAvatar: FC<GeneratedAvatarProps> = (props) => {
-  const randomColor = generateRandomLinearGradient();
   const { className, firstName, lastName, size } = props;
+
+  const gradient = generateRandomLinearGradient();
 
   return (
     <div
       className={cn(avatarVariants({ className, size }))}
       style={{
-        background: randomColor,
+        background: gradient,
       }}
     >
       {makeDecision(ruleData, firstName, lastName)}
