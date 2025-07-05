@@ -2,6 +2,7 @@
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
+import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAvatar';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -29,7 +30,7 @@ export const DashboardUserButton: FC = observer(() => {
               <AvatarImage height={36} src={user.image} width={36} />
             </Avatar>
           ) : (
-            user.email
+            <GeneratedAvatar firstName={user.name} />
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
