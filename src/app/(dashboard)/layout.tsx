@@ -1,5 +1,6 @@
 import { FC, ReactNode } from 'react';
 
+import { DashboardNavbar } from '@/_pages/dashboard/ui/DashboardNavbar/DashboardNavbar';
 import { DashboardSidebar } from '@/_pages/dashboard/ui/DashboardSidebar/DashboardSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
@@ -9,12 +10,14 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = (props) => {
   return (
-    <div>
-      <SidebarProvider>
-        <DashboardSidebar />
+    <SidebarProvider>
+      <DashboardSidebar />
+      <div className={'bg-muted flex h-screen w-screen flex-col'}>
+        <DashboardNavbar />
+
         {props.children}
-      </SidebarProvider>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
