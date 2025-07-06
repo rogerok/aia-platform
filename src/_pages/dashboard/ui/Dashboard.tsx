@@ -13,7 +13,7 @@ export const Dashboard: FC = observer(() => {
     <div
       className={'flex h-screen w-full flex-col items-center justify-center'}
     >
-      <Button disabled={authStore.loading} onClick={authStore.signOut}>
+      <Button disabled={authStore.loading} onClick={authStore.logout}>
         Sign out
       </Button>
     </div>

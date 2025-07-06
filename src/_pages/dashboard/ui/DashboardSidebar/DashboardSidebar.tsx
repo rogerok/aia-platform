@@ -2,7 +2,7 @@ import { BotIcon, StarIcon, VideoIcon } from 'lucide-react';
 import { FC } from 'react';
 
 import { DashboardSidebarItem } from '@/_pages/dashboard/ui/DashboardSidebar/DashboardSidebarItem';
-import { DashboardUserButton } from '@/_pages/dashboard/ui/DashboardUserButton/DashboardUserButton';
+import { DashboardUserMenu } from '@/_pages/dashboard/ui/DashboardUserMenu/DashboardUserMenu';
 import { LinkComponent } from '@/components/custom/LinkComponent/LinkComponent';
 import { Logo } from '@/components/custom/Logo/Logo';
 import {
@@ -94,7 +94,7 @@ export const DashboardSidebar: FC<SidebarProps> = (props) => {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <DashboardUserButton />
+        <DashboardUserMenu />
       </SidebarFooter>
     </Sidebar>
   );

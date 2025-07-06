@@ -81,7 +81,7 @@ export class AuthStore {
     });
   }
 
-  async signOut(): Promise<void> {
+  async logout(): Promise<void> {
     const resp = await this.authService.signOut();
     if (resp.data) {
       this.routerStore.navigate(routes.signIn());
