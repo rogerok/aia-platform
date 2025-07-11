@@ -1,3 +1,5 @@
+import { inferRouterOutputs } from '@trpc/server';
+
 import { db } from '@/db';
 import { agents } from '@/db/schemas/schema';
 import { baseProcedure, createTRPCRouter } from '@/trpc/server/init';
@@ -8,3 +10,5 @@ export const agentsRouter = createTRPCRouter({
     return data;
   }),
 });
+
+type RouterOutput = inferRouterOutputs<typeof agentsRouter>['getMany'][number];
