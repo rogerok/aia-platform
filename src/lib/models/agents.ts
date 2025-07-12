@@ -24,3 +24,12 @@ export class AgentModel implements AgentRouterOutput {
   @IsUUID()
   id: string;
 }
+
+export class AgentCreateModel {
+  @IsString()
+  @Length(2, 256)
+  name: string;
+
+  @IsString()
+  instructions: string;
+}

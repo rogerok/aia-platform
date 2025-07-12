@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { authApi } from '@/lib/auth';
 import { routes } from '@/lib/constants/routes';
 
-const getSession = async () => {
+export const getSession = async () => {
   let resp;
 
   try {

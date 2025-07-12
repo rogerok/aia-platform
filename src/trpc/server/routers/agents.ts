@@ -2,9 +2,26 @@ import { inferRouterOutputs } from '@trpc/server';
 
 import { db } from '@/db';
 import { agents } from '@/db/schemas/schema';
-import { baseProcedure, createTRPCRouter } from '@/trpc/server/init';
+import { AgentCreateModel } from '@/lib/models/agents';
+import {
+  baseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from '@/trpc/server/init';
+import { processInput } from '@/trpc/server/validator';
 
 export const agentsRouter = createTRPCRouter({
+  create: protectedProcedure
+    .input((input) => processInput(AgentCreateModel, input))
+    .mutation(async ({ ctx, input }) => {
+      const { instructions, name } = input;
+
+      await db.insert(agents).values({
+        instructions,
+        name,
+        userId: ctx.auth.user.id,
+      });
+    }),
   getMany: baseProcedure.query(async () => db.select().from(agents)),
 });
 
