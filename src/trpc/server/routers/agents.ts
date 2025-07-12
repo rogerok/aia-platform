@@ -16,11 +16,16 @@ export const agentsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { instructions, name } = input;
 
-      await db.insert(agents).values({
-        instructions,
-        name,
-        userId: ctx.auth.user.id,
-      });
+      const [createdAgent] = await db
+        .insert(agents)
+        .values({
+          instructions,
+          name,
+          userId: ctx.auth.user.id,
+        })
+        .returning();
+
+      return createdAgent;
     }),
   getMany: baseProcedure.query(async () => db.select().from(agents)),
 });
