@@ -1,8 +1,8 @@
-import { IsDate, IsString, IsUUID, Length } from 'class-validator';
+import { IsString, IsUUID, Length } from 'class-validator';
 
-import { SelectAgent } from '@/db/models/agents';
+import { AgentRouterOutput } from '@/trpc/server/routers/agents';
 
-export class AgentModel implements SelectAgent {
+export class AgentModel implements AgentRouterOutput {
   @IsString()
   @Length(2, 256)
   name: string;
@@ -10,11 +10,11 @@ export class AgentModel implements SelectAgent {
   @IsString()
   instructions: string;
 
-  @IsDate()
-  updatedAt: Date;
+  @IsString()
+  updatedAt: string;
 
-  @IsDate()
-  createdAt: Date;
+  @IsString()
+  createdAt: string;
 
   @IsString()
   @IsUUID()

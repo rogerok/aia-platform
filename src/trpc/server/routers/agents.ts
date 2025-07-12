@@ -5,10 +5,9 @@ import { agents } from '@/db/schemas/schema';
 import { baseProcedure, createTRPCRouter } from '@/trpc/server/init';
 
 export const agentsRouter = createTRPCRouter({
-  getMany: baseProcedure.query(async () => {
-    const data = await db.select().from(agents);
-    return data;
-  }),
+  getMany: baseProcedure.query(async () => db.select().from(agents)),
 });
 
-type RouterOutput = inferRouterOutputs<typeof agentsRouter>['getMany'][number];
+export type AgentRouterOutput = inferRouterOutputs<
+  typeof agentsRouter
+>['getMany'][number];

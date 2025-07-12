@@ -1,41 +1,22 @@
 'use client';
 
+import { plainToInstance } from 'class-transformer';
 import { observer } from 'mobx-react-lite';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
-import { ShowError } from '@/components/custom/Error/ShowError';
-import { Loader } from '@/components/custom/Loader/Loader';
+import { useAgentsStoreHydration } from '@/_pages/agents/store/AgentsStore';
 import { AgentModel } from '@/lib/models/agents';
-import { RequestStore } from '@/lib/stores/requestStore';
-import { trpcClient } from '@/trpc/client/trpcClient';
+import { AgentRouterOutput } from '@/trpc/server/routers/agents';
 
 interface AgentsProps {
-  data: AgentModel[];
+  data: AgentRouterOutput[];
   className?: string;
 }
 
 export const Agents: FC<AgentsProps> = observer((props) => {
-  const [request] = useState(
-    () => new RequestStore(trpcClient.agents.getMany.query),
+  const store = useAgentsStoreHydration((store) =>
+    store.init(plainToInstance(AgentModel, props.data)),
   );
 
-  useEffect(() => {
-    request.execute();
-  }, []);
-
-  if (request.result.status === 'loading') {
-    return <Loader />;
-  }
-
-  if (request.result.status === 'error') {
-    return <ShowError description={request.result.error} />;
-  }
-
-  return (
-    request.result.status === 'success' && (
-      <div>
-        {request.result.data[0].name} {props.data[0].createdAt.toString()}
-      </div>
-    )
-  );
+  return store.data.length ? <div>{store.data[0]?.createdAt}</div> : null;
 });
