@@ -2,14 +2,12 @@
 
 import { FC, ReactNode } from 'react';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Drawer,
@@ -17,14 +15,12 @@ import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from '@/components/ui/drawer';
 import { useIsMobile } from '@/lib/hooks/use-mobile';
 
 interface ResponsiveDialogProps {
   children: ReactNode;
   open: boolean;
-  className?: string;
   description?: string;
   openText?: ReactNode;
   title?: string;
@@ -37,9 +33,6 @@ export const ResponsiveDialog: FC<ResponsiveDialogProps> = (props) => {
   if (isMobile) {
     return (
       <Drawer onOpenChange={props.onOpenChange} open={props.open}>
-        <DrawerTrigger asChild>
-          <Button variant="outline">{props.openText}</Button>
-        </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>{props.title}</DrawerTitle>
@@ -53,9 +46,6 @@ export const ResponsiveDialog: FC<ResponsiveDialogProps> = (props) => {
 
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
-      <DialogTrigger asChild>
-        <Button variant="outline">{props.openText}</Button>
-      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{props.title}</DialogTitle>

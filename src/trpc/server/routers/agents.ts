@@ -1,8 +1,9 @@
 import { inferRouterOutputs } from '@trpc/server';
+import { eq } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { agents } from '@/db/schemas/schema';
-import { AgentCreateModel } from '@/lib/models/agents';
+import { AgentCreateModel, AgentGetModel } from '@/lib/models/agents';
 import {
   baseProcedure,
   createTRPCRouter,
@@ -27,9 +28,22 @@ export const agentsRouter = createTRPCRouter({
 
       return createdAgent;
     }),
-  getMany: baseProcedure.query(async () => db.select().from(agents)),
+  getMany: baseProcedure.query(async () => {
+    new Promise((resolve) => setTimeout(resolve, 10000));
+    return db.select().from(agents);
+  }),
+
+  getOne: protectedProcedure
+    .input((input) => processInput(AgentGetModel, input))
+    .query(async ({ input }) => {
+      const [agent] = await db
+        .select()
+        .from(agents)
+        .where(eq(agents.id, input.id));
+      return agent;
+    }),
 });
 
 export type AgentRouterOutput = inferRouterOutputs<
   typeof agentsRouter
->['getMany'][number];
+>['getOne'];

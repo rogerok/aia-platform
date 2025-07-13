@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsString, IsUUID, Length } from 'class-validator';
 
 import { AgentRouterOutput } from '@/trpc/server/routers/agents';
@@ -27,9 +28,18 @@ export class AgentModel implements AgentRouterOutput {
 
 export class AgentCreateModel {
   @IsString()
+  // TODO: create custom decarator
+  @Transform((params) => params.value?.trim)
   @Length(2, 256)
   name: string;
 
   @IsString()
+  @Transform((params) => params.value?.trim)
   instructions: string;
+}
+
+export class AgentGetModel {
+  @IsString()
+  @IsUUID()
+  id: string;
 }

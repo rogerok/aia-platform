@@ -37,7 +37,7 @@ const ruleData: GenerateAvatarRules[] = [
 ];
 
 const avatarVariants = cva(
-  'flex items-center justify-center rounded-full text-center font-bold uppercase',
+  'flex items-center justify-center rounded-full text-center font-bold uppercase text-white',
   {
     defaultVariants: {
       size: 'md',
