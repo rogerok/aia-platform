@@ -17,6 +17,7 @@ export const Agents: FC<AgentsProps> = observer((props) => {
   const store = useAgentsStoreHydration((store) =>
     store.init(plainToInstance(AgentModel, props.data)),
   );
+  console.log(store.loading.load);
 
   return store.data.length ? (
     <div>
