@@ -8,10 +8,11 @@ import { routes } from '@/lib/constants/routes';
 
 export const getSession = async () => {
   let resp;
+  const headersData = await headers();
 
   try {
     resp = await authApi.getSession({
-      headers: await headers(),
+      headers: headersData,
     });
   } catch (e) {
     // TODO: implement errors handling
