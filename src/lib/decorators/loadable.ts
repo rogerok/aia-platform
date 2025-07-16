@@ -1,4 +1,5 @@
 import { createDecorator } from '@/lib/decorators/createDecorator';
+import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 
 type KeyBooleanValue = {
   [key: string]: boolean;
@@ -37,13 +38,69 @@ export const loadable = <T>(keyLoading: keyof T) =>
     }
   });
 
-export const simpleLoadable = () =>
-  createDecorator<any>(async (self, method, ...args) => {
+/*
+ Используется если нужно тогглить только одно поле.
+ Возможно стоит добавить метод setLoading в тип т.к. mobx требует мутирования через action
+ */
+
+interface ISimpleLoadable {
+  isLoading: boolean;
+}
+
+export const simpleLoadable = <T extends ISimpleLoadable>() =>
+  createDecorator<T>(async (self, method, ...args) => {
     if (self.isLoading) return;
     self.isLoading = true;
     try {
       return await method.call(self, ...args);
     } finally {
       self.isLoading = false;
+    }
+  });
+
+/*
+  Можно использовать BooleanToggleStore
+ */
+
+interface ILoadableByToggleStore {
+  loading: BooleanToggleStore;
+}
+
+export const loadableByToggleStore = <T extends ILoadableByToggleStore>() =>
+  createDecorator<T>(async (self, method, ...args) => {
+    if (self.loading.value) {
+      return;
+    }
+    self.loading.setTrue();
+    try {
+      return await method.call(self, ...args);
+    } finally {
+      self.loading.setFalse();
+    }
+  });
+
+/*
+  Динамически указывать название поля
+ */
+
+type KeysOfType<T, V> = {
+  // мапаемся по типу и проверяем соответствие
+  [K in keyof T]: T[K] extends V ? K : never;
+  //  забираем ключи как union тип
+}[keyof T];
+
+export const loadableByField = <T, K extends KeysOfType<T, BooleanToggleStore>>(
+  key: K,
+) =>
+  createDecorator<T>(async (self, method, ...args) => {
+    const toggle = self[key] as BooleanToggleStore;
+
+    if (toggle.value) return;
+
+    toggle.setTrue();
+    try {
+      await method.call(self, ...args);
+    } finally {
+      toggle.setFalse();
     }
   });

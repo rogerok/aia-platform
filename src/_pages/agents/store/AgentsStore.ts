@@ -2,17 +2,12 @@
 
 import { makeAutoObservable } from 'mobx';
 
-import { simpleLoadable } from '@/lib/decorators/loadable';
 import { MobxForm } from '@/lib/form/mobxForm';
 import { AgentCreateModel, AgentModel } from '@/lib/models/agents';
 import { createStoreContext } from '@/lib/storeAdapter/storeAdapter';
 import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { useRootStore } from '@/lib/stores/rootStore';
 import { RouterStore } from '@/lib/stores/routerStore';
-
-const loadIndicator = {
-  load: false,
-};
 
 export class AgentsStore {
   data: AgentModel[] = [];
@@ -28,11 +23,9 @@ export class AgentsStore {
   constructor(router: RouterStore) {
     makeAutoObservable(this);
 
-    this.loading = loadIndicator;
     this.router = router;
   }
 
-  @simpleLoadable()
   init(data: AgentModel[]) {
     this.data.push(...data);
   }
