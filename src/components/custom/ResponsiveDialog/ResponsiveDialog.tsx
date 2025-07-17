@@ -24,6 +24,7 @@ interface ResponsiveDialogProps {
   description?: string;
   openText?: ReactNode;
   title?: string;
+  onClose?: () => void;
   onOpenChange?: (open: boolean) => void;
 }
 
@@ -32,7 +33,11 @@ export const ResponsiveDialog: FC<ResponsiveDialogProps> = (props) => {
 
   if (isMobile) {
     return (
-      <Drawer onOpenChange={props.onOpenChange} open={props.open}>
+      <Drawer
+        onClose={props.onClose}
+        onOpenChange={props.onOpenChange}
+        open={props.open}
+      >
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>{props.title}</DrawerTitle>
@@ -45,7 +50,16 @@ export const ResponsiveDialog: FC<ResponsiveDialogProps> = (props) => {
   }
 
   return (
-    <Dialog onOpenChange={props.onOpenChange} open={props.open}>
+    <Dialog
+      onOpenChange={(open) => {
+        if (!open) {
+          props.onClose?.();
+        }
+        props.onOpenChange?.(open);
+      }}
+      // onOpenChange={props.onOpenChange}
+      open={props.open}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{props.title}</DialogTitle>

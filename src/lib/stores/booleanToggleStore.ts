@@ -15,8 +15,8 @@ export class BooleanToggleStore {
     this.initialValue = value;
   }
 
-  setValue(value: boolean): void {
-    this.value = value;
+  reset(): void {
+    this.value = this.initialValue;
   }
 
   setFalse(): void {
@@ -27,11 +27,11 @@ export class BooleanToggleStore {
     this.value = true;
   }
 
-  toggle(): void {
-    this.value = !this.value;
+  setValue(value: boolean): void {
+    this.value = value;
   }
 
-  reset(): void {
-    this.value = this.initialValue;
+  toggle(): void {
+    this.value = !this.value;
   }
 }

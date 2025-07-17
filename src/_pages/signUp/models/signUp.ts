@@ -8,12 +8,12 @@ import {
 } from 'class-validator';
 
 export class SignUpModel {
+  @IsEmail()
+  email: string;
+
   @IsString()
   @Length(2, 50)
   name: string;
-
-  @IsEmail()
-  email: string;
 
   @Length(8, 50)
   password: string;

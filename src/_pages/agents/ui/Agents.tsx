@@ -18,10 +18,13 @@ export const Agents: FC<AgentsProps> = observer((props) => {
     store.init(plainToInstance(AgentModel, props.data)),
   );
 
-  return store.data.length ? (
-    <div>
-      {store.data[0]?.createdAt}
-      {/*<ResponsiveDialog open>asdadsad</ResponsiveDialog>*/}
-    </div>
-  ) : null;
+  return (
+    !!store.data.length && (
+      <div>
+        {store.data.map((agent) => (
+          <div key={agent.id}>{agent.name}</div>
+        ))}
+      </div>
+    )
+  );
 });

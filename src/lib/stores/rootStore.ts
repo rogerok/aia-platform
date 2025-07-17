@@ -13,9 +13,9 @@ interface RootStoreArgs {
 }
 
 export class RootStore {
-  router: RouterStore;
-  authStore: AuthStore;
   authClient: AuthClient;
+  authStore: AuthStore;
+  router: RouterStore;
 
   constructor(args: RootStoreArgs) {
     this.router = args.router;

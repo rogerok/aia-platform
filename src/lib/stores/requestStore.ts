@@ -7,7 +7,7 @@ type LoadingResult = { data: null; status: 'loading' };
 type IdleResult = { data: null; status: 'idle' };
 
 type Result<T> = ErrorResult | IdleResult | LoadingResult | SuccessResult<T>;
-type ExecuteResult<T> = ErrorResult | SuccessResult<T>;
+export type ExecuteResult<T> = ErrorResult | SuccessResult<T>;
 
 export class RequestStore<T, Args extends any[] = []> {
   result: Result<T> = { data: null, status: 'idle' };
@@ -20,9 +20,16 @@ export class RequestStore<T, Args extends any[] = []> {
     );
   }
 
+  get isLoading() {
+    return this.result.status === 'loading';
+  }
+
+  get isSuccess() {
+    return this.result.status === 'success';
+  }
+
   execute = async (...args: Args): Promise<ExecuteResult<T>> => {
     this.result = { data: null, status: 'loading' };
-
     try {
       const data = await this.fetchFn(...args);
       runInAction(() => {
@@ -36,12 +43,4 @@ export class RequestStore<T, Args extends any[] = []> {
 
     return this.result as unknown as ExecuteResult<T>;
   };
-
-  get isLoading() {
-    return this.result.status === 'loading';
-  }
-
-  get isSuccess() {
-    return this.result.status === 'success';
-  }
 }

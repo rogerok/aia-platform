@@ -95,11 +95,13 @@ export const loadableByField = <T, K extends KeysOfType<T, BooleanToggleStore>>(
   createDecorator<T>(async (self, method, ...args) => {
     const toggle = self[key] as BooleanToggleStore;
 
-    if (toggle.value) return;
+    if (toggle.value) {
+      return;
+    }
 
     toggle.setTrue();
     try {
-      await method.call(self, ...args);
+      return await method.call(self, ...args);
     } finally {
       toggle.setFalse();
     }

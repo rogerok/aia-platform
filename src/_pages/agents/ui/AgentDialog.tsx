@@ -10,10 +10,14 @@ interface AgentDialogProps {
 }
 
 export const AgentDialog: FC<AgentDialogProps> = observer((props) => {
-  const { dialog } = useAgentsStore();
+  const { dialog, form } = useAgentsStore();
 
   return (
-    <ResponsiveDialog onOpenChange={dialog.setValue} open={dialog.value}>
+    <ResponsiveDialog
+      onClose={form.resetForm}
+      onOpenChange={dialog.setValue}
+      open={dialog.value}
+    >
       <AgentForm />
     </ResponsiveDialog>
   );

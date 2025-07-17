@@ -16,7 +16,6 @@ export const agentsRouter = createTRPCRouter({
     .input((input) => processInput(AgentCreateModel, input))
     .mutation(async ({ ctx, input }) => {
       const { instructions, name } = input;
-
       const [createdAgent] = await db
         .insert(agents)
         .values({
@@ -29,7 +28,6 @@ export const agentsRouter = createTRPCRouter({
       return createdAgent;
     }),
   getMany: baseProcedure.query(async () => {
-    new Promise((resolve) => setTimeout(resolve, 10000));
     return db.select().from(agents);
   }),
 
