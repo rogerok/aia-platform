@@ -84,6 +84,7 @@ const eslintConfig = [
           type: 'alphabetical',
         },
       ],
+      'react/display-name': 'off',
     },
   },
 ];

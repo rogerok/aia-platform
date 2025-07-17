@@ -5,11 +5,7 @@ import { useAgentsStore } from '@/_pages/agents/store/AgentsStore';
 import { AgentForm } from '@/_pages/agents/ui/form/AgentForm';
 import { ResponsiveDialog } from '@/components/custom/ResponsiveDialog/ResponsiveDialog';
 
-interface AgentDialogProps {
-  className?: string;
-}
-
-export const AgentDialog: FC<AgentDialogProps> = observer((props) => {
+export const AgentDialog: FC = observer(() => {
   const { dialog, form } = useAgentsStore();
 
   return (

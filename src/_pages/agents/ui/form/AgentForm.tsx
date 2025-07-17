@@ -26,7 +26,7 @@ export const AgentForm: FC<AgentFormProps> = observer((props) => {
       className={cn('flex flex-col gap-4', className)}
       methods={form}
     >
-      <AgentFormAvatar />
+      <AgentFormAvatar name={form.values.name} />
       <TextField
         label={'Name'}
         name={'name'}

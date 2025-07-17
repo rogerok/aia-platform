@@ -7,7 +7,7 @@ type LoadingResult = { data: null; status: 'loading' };
 type IdleResult = { data: null; status: 'idle' };
 
 type Result<T> = ErrorResult | IdleResult | LoadingResult | SuccessResult<T>;
-export type ExecuteResult<T> = ErrorResult | SuccessResult<T>;
+type ExecuteResult<T> = ErrorResult | SuccessResult<T>;
 
 export class RequestStore<T, Args extends any[] = []> {
   result: Result<T> = { data: null, status: 'idle' };
@@ -39,6 +39,7 @@ export class RequestStore<T, Args extends any[] = []> {
       runInAction(() => {
         this.result = { data: null, error, status: 'error' };
       });
+      throw error;
     }
 
     return this.result as unknown as ExecuteResult<T>;
