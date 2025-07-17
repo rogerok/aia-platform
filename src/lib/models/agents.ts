@@ -4,22 +4,37 @@ import { AgentRouterOutput } from '@/trpc/server/routers/agents';
 
 export class AgentModel implements AgentRouterOutput {
   @IsString()
-  @Length(2, 256)
-  name: string;
+  createdAt: string;
+
+  @IsString()
+  @IsUUID()
+  id: string;
 
   @IsString()
   instructions: string;
 
   @IsString()
-  updatedAt: string;
+  @Length(2, 256)
+  name: string;
 
   @IsString()
-  createdAt: string;
+  updatedAt: string;
 
   @IsString()
   @IsUUID()
   userId: string;
+}
 
+export class AgentCreateModel {
+  @IsString()
+  instructions: string;
+
+  @IsString()
+  @Length(2, 256)
+  name: string;
+}
+
+export class AgentGetModel {
   @IsString()
   @IsUUID()
   id: string;

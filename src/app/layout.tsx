@@ -6,6 +6,7 @@ import { FC, ReactNode } from 'react';
 import './globals.css';
 
 import { AppInitializer } from '@/app/AppInitializer';
+import { Toaster } from '@/components/ui/sonner';
 import { RootStoreProvider } from '@/lib/stores/rootStore';
 
 const geistSans = Geist({
@@ -34,6 +35,7 @@ const RootLayout: FC<RootLayoutProps> = (props) => {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <RootStoreProvider>
+          <Toaster />
           <AppInitializer>{props.children}</AppInitializer>
         </RootStoreProvider>
       </body>

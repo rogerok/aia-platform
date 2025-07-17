@@ -19,6 +19,29 @@ const eslintConfig = [
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
+      'perfectionist/sort-classes': [
+        'warn',
+        {
+          groups: [
+            'index-signature',
+            ['property'],
+            'constructor',
+            'method',
+            'get-method',
+            'set-method',
+            'static-method',
+            'protected-method',
+            'private-method',
+            'function-property',
+            'protected-function-property',
+            'private-function-property',
+
+            'unknown',
+          ],
+          order: 'asc',
+          type: 'alphabetical',
+        },
+      ],
       'perfectionist/sort-enums': 'warn',
       'perfectionist/sort-exports': 'warn',
       'perfectionist/sort-imports': 'warn',
@@ -61,6 +84,7 @@ const eslintConfig = [
           type: 'alphabetical',
         },
       ],
+      'react/display-name': 'off',
     },
   },
 ];

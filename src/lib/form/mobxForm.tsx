@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // import { LinkedAbortController } from 'linked-abort-controller';
-import { action, comparer, makeObservable, observable } from 'mobx';
+import {
+  action,
+  comparer,
+  makeObservable,
+  observable,
+  runInAction,
+} from 'mobx';
 import { enableStaticRendering } from 'mobx-react-lite';
 import { BaseSyntheticEvent } from 'react';
 import {
@@ -88,22 +94,9 @@ export class MobxForm<
   TTransformedValues = TFieldValues,
 > implements FormFullState<TFieldValues>
 {
-  values!: TFieldValues;
-  isDirty: boolean = false;
-  isLoading: boolean = false;
-  isSubmitted: boolean = false;
-  isSubmitSuccessful: boolean = false;
-  isSubmitting: boolean = false;
-  isValidating: boolean = false;
-  isValid: boolean = false;
-  disabled: boolean = false;
-  submitCount: number = 0;
-  /**
-   * Custom properties for async control form's submitting state - submitting,submitted, submitSuccessful,
-   */
-  submitting: boolean = false;
-  submitted = false;
-  submitSuccessful = false;
+  protected abortController: AbortController | undefined;
+  clearErrors: UseFormClearErrors<TFieldValues>;
+  control: Control<TFieldValues, TContext, TTransformedValues>;
   /**
    * If you want to change this property
    * Use {resetForm} method
@@ -111,42 +104,55 @@ export class MobxForm<
   defaultValues!: Readonly<DefaultValues<TFieldValues>>;
   dirtyFields: Partial<Readonly<DeepMap<DeepPartial<TFieldValues>, boolean>>> =
     {};
-  touchedFields: Partial<
-    Readonly<DeepMap<DeepPartial<TFieldValues>, boolean>>
-  > = {};
-  validatingFields: Partial<
-    Readonly<DeepMap<DeepPartial<TFieldValues>, boolean>>
-  > = {};
+  disabled: boolean = false;
   errors: FieldErrors<TFieldValues> = {};
+  isDirty: boolean = false;
+  isLoading: boolean = false;
   isReady: boolean = false;
-
-  setError: UseFormSetError<TFieldValues>;
-
-  clearErrors: UseFormClearErrors<TFieldValues>;
-
-  trigger: UseFormTrigger<TFieldValues>;
-
+  isSubmitSuccessful: boolean = false;
+  isSubmitted: boolean = false;
+  isSubmitting: boolean = false;
+  isValid: boolean = false;
+  isValidating: boolean = false;
+  protected lastRafId: number | undefined;
+  originalForm: ReturnType<
+    typeof createFormControl<TFieldValues, TContext, TTransformedValues>
+  >;
+  register: UseFormRegister<TFieldValues>;
   resetField: UseFormResetField<TFieldValues>;
 
-  unregister: UseFormUnregister<TFieldValues>;
+  resetForm: UseFormReset<TFieldValues>;
 
-  control: Control<TFieldValues, TContext, TTransformedValues>;
-
-  register: UseFormRegister<TFieldValues>;
+  setError: UseFormSetError<TFieldValues>;
 
   setFocus: UseFormSetFocus<TFieldValues>;
 
   setValue: UseFormSetValue<TFieldValues>;
 
-  resetForm: UseFormReset<TFieldValues>;
+  submitCount: number = 0;
 
-  protected abortController: AbortController | undefined;
+  submitSuccessful = false;
 
-  protected lastRafId: number | undefined;
+  submitted = false;
 
-  originalForm: ReturnType<
-    typeof createFormControl<TFieldValues, TContext, TTransformedValues>
-  >;
+  /**
+   * Custom properties for async control form's submitting state - submitting,submitted, submitSuccessful,
+   */
+  submitting: boolean = false;
+
+  touchedFields: Partial<
+    Readonly<DeepMap<DeepPartial<TFieldValues>, boolean>>
+  > = {};
+
+  trigger: UseFormTrigger<TFieldValues>;
+
+  unregister: UseFormUnregister<TFieldValues>;
+
+  validatingFields: Partial<
+    Readonly<DeepMap<DeepPartial<TFieldValues>, boolean>>
+  > = {};
+
+  values!: TFieldValues;
 
   constructor(
     private config: MobxFormParams<TFieldValues, TContext, TTransformedValues>,
@@ -245,43 +251,55 @@ export class MobxForm<
     });
   }
 
-  setFormSubmitting(submitting: boolean): void {
-    this.submitting = submitting;
+  destroy(): void {
+    this.abortController?.abort?.();
+    if (this.lastRafId !== undefined) {
+      cancelAnimationFrame(this.lastRafId);
+    }
+  }
+
+  reset(e?: BaseSyntheticEvent) {
+    this.resetForm();
+    this.config.onReset?.(e);
+  }
+  setFormSubmitSuccessful(successful: boolean): void {
+    this.submitSuccessful = successful;
   }
 
   setFormSubmitted(submitted: boolean): void {
     this.submitted = submitted;
   }
-  setFormSubmitSuccessful(successful: boolean): void {
-    this.submitSuccessful = successful;
+
+  setFormSubmitting(submitting: boolean): void {
+    this.submitting = submitting;
   }
 
   submit(e?: BaseSyntheticEvent) {
     this.setFormSubmitting.bind(this)(true);
     this.setFormSubmitted(false);
     this.setFormSubmitSuccessful(false);
+
     return new Promise<TTransformedValues>((resolve, reject) => {
       this.originalForm.handleSubmit(
         async (data, event) => {
           await this.config.onSubmit?.(data, event);
           resolve(data);
-          this.setFormSubmitSuccessful(true);
+
+          runInAction(() => this.setFormSubmitSuccessful(true));
         },
         async (errors, event) => {
           await this.config.onSubmitFailed?.(errors, event);
           reject(errors);
-          this.setFormSubmitSuccessful(false);
+
+          runInAction(() => this.setFormSubmitSuccessful(false));
         },
       )(e);
     }).finally(() => {
-      this.setFormSubmitting(false);
-      this.setFormSubmitted(true);
+      runInAction(() => {
+        this.setFormSubmitting(false);
+        this.setFormSubmitted(true);
+      });
     });
-  }
-
-  reset(e?: BaseSyntheticEvent) {
-    this.resetForm();
-    this.config.onReset?.(e);
   }
 
   private updateFormState({
@@ -325,12 +343,5 @@ export class MobxForm<
 
     // @ts-ignore
     this.values = values ?? {};
-  }
-
-  destroy(): void {
-    this.abortController?.abort?.();
-    if (this.lastRafId !== undefined) {
-      cancelAnimationFrame(this.lastRafId);
-    }
   }
 }

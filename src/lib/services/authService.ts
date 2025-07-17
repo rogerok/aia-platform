@@ -9,14 +9,18 @@ export class AuthService {
     this.client = client;
   }
 
-  signInWithEmailAndPassword(credentials: AuthByEmailModel) {
-    return this.client.instance.signIn.email(credentials);
-  }
-
   signInBySocial(provider: AuthProvidersType) {
     return this.client.instance.signIn.social({
       provider: provider,
     });
+  }
+
+  signInWithEmailAndPassword(credentials: AuthByEmailModel) {
+    return this.client.instance.signIn.email(credentials);
+  }
+
+  signOut() {
+    return this.client.instance.signOut();
   }
 
   signUp(data: SignUpModel) {
@@ -25,10 +29,6 @@ export class AuthService {
       name: data.name,
       password: data.password,
     });
-  }
-
-  signOut() {
-    return this.client.instance.signOut();
   }
 
   useSession() {

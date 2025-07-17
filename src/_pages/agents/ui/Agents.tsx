@@ -5,7 +5,6 @@ import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
 import { useAgentsStoreHydration } from '@/_pages/agents/store/AgentsStore';
-import { ResponsiveDialog } from '@/components/custom/ResponsiveDialog/ResponsiveDialog';
 import { AgentModel } from '@/lib/models/agents';
 import { AgentRouterOutput } from '@/trpc/server/routers/agents';
 
@@ -19,10 +18,13 @@ export const Agents: FC<AgentsProps> = observer((props) => {
     store.init(plainToInstance(AgentModel, props.data)),
   );
 
-  return store.data.length ? (
-    <div>
-      {store.data[0]?.createdAt}
-      <ResponsiveDialog open>asdadsad</ResponsiveDialog>
-    </div>
-  ) : null;
+  return (
+    !!store.data.length && (
+      <div>
+        {store.data.map((agent) => (
+          <div key={agent.id}>{agent.name}</div>
+        ))}
+      </div>
+    )
+  );
 });

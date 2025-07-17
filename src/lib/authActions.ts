@@ -6,12 +6,13 @@ import { redirect } from 'next/navigation';
 import { authApi } from '@/lib/auth';
 import { routes } from '@/lib/constants/routes';
 
-const getSession = async () => {
+export const getSession = async () => {
   let resp;
+  const headersData = await headers();
 
   try {
     resp = await authApi.getSession({
-      headers: await headers(),
+      headers: headersData,
     });
   } catch (e) {
     // TODO: implement errors handling

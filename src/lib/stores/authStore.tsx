@@ -12,7 +12,7 @@ import { RouterStore } from '@/lib/stores/routerStore';
 
 export class AuthStore {
   authService: AuthService;
-  routerStore: RouterStore;
+  error: string | undefined;
 
   form = new MobxForm<AuthByEmailModel>({
     abortController: new AbortController(),
@@ -26,7 +26,7 @@ export class AuthStore {
   });
 
   loading: boolean = false;
-  error: string | undefined;
+  routerStore: RouterStore;
 
   constructor(authService: AuthService, routerStore: RouterStore) {
     makeAutoObservable(
@@ -41,24 +41,15 @@ export class AuthStore {
     this.routerStore = routerStore;
   }
 
-  async submitForm(data: AuthByEmailModel): Promise<void> {
-    runInAction(() => {
-      this.loading = true;
-      this.error = undefined;
-    });
+  getSession() {
+    return this.authService.useSession().data;
+  }
 
-    const resp = await this.authService.signInWithEmailAndPassword(data);
-
-    runInAction(() => {
-      this.loading = false;
-
-      if (resp.data) {
-        this.error = undefined;
-        this.routerStore.navigate(routes.home());
-      } else {
-        this.error = resp.error.message;
-      }
-    });
+  async logout(): Promise<void> {
+    const resp = await this.authService.signOut();
+    if (resp.data) {
+      this.routerStore.navigate(routes.signIn());
+    }
   }
 
   async signInBySocial(provider: AuthProvidersType): Promise<void> {
@@ -81,14 +72,23 @@ export class AuthStore {
     });
   }
 
-  async logout(): Promise<void> {
-    const resp = await this.authService.signOut();
-    if (resp.data) {
-      this.routerStore.navigate(routes.signIn());
-    }
-  }
+  async submitForm(data: AuthByEmailModel): Promise<void> {
+    runInAction(() => {
+      this.loading = true;
+      this.error = undefined;
+    });
 
-  getSession() {
-    return this.authService.useSession().data;
+    const resp = await this.authService.signInWithEmailAndPassword(data);
+
+    runInAction(() => {
+      this.loading = false;
+
+      if (resp.data) {
+        this.error = undefined;
+        this.routerStore.navigate(routes.home());
+      } else {
+        this.error = resp.error.message;
+      }
+    });
   }
 }

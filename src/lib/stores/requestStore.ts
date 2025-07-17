@@ -20,9 +20,16 @@ export class RequestStore<T, Args extends any[] = []> {
     );
   }
 
+  get isLoading() {
+    return this.result.status === 'loading';
+  }
+
+  get isSuccess() {
+    return this.result.status === 'success';
+  }
+
   execute = async (...args: Args): Promise<ExecuteResult<T>> => {
     this.result = { data: null, status: 'loading' };
-
     try {
       const data = await this.fetchFn(...args);
       runInAction(() => {
@@ -32,16 +39,9 @@ export class RequestStore<T, Args extends any[] = []> {
       runInAction(() => {
         this.result = { data: null, error, status: 'error' };
       });
+      throw error;
     }
 
     return this.result as unknown as ExecuteResult<T>;
   };
-
-  get isLoading() {
-    return this.result.status === 'loading';
-  }
-
-  get isSuccess() {
-    return this.result.status === 'success';
-  }
 }

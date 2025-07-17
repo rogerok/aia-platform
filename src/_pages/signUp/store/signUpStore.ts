@@ -6,6 +6,8 @@ import { MobxForm } from '@/lib/form/mobxForm';
 import { AuthService } from '@/lib/services/authService';
 
 export class SignUpStore {
+  error: string | undefined;
+
   form = new MobxForm<SignUpModel>({
     abortController: new AbortController(),
     defaultValues: {
@@ -18,7 +20,6 @@ export class SignUpStore {
     onSubmit: this.submitForm.bind(this),
     resolver: classValidatorResolver(SignUpModel),
   });
-  error: string | undefined;
 
   constructor(protected service: AuthService) {
     makeAutoObservable(this);
