@@ -1,4 +1,4 @@
-import { IsString, IsUUID, Length } from 'class-validator';
+import { IsNumber, IsString, IsUUID, Length } from 'class-validator';
 
 import { AgentRouterOutput } from '@/trpc/server/routers/agents';
 
@@ -12,6 +12,9 @@ export class AgentModel implements AgentRouterOutput {
 
   @IsString()
   instructions: string;
+
+  @IsNumber()
+  meetingCount: number;
 
   @IsString()
   @Length(2, 256)

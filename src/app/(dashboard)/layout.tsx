@@ -14,7 +14,6 @@ const Layout: FC<LayoutProps> = (props) => {
       <DashboardSidebar />
       <div className={'bg-muted flex h-screen w-screen flex-col'}>
         <DashboardNavbar />
-
         {props.children}
       </div>
     </SidebarProvider>

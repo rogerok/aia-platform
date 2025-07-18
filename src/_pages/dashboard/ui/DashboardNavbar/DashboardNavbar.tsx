@@ -29,7 +29,7 @@ export const DashboardNavbar: FC<DashboardNavbarProps> = observer((props) => {
   return (
     <nav
       className={cn(
-        'bg-background flex w-full items-center gap-x-2 border-b px-4',
+        'bg-background flex w-full items-center gap-x-2 border-b px-4 py-2',
         props.className,
       )}
     >
