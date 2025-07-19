@@ -1,9 +1,12 @@
-import { inferRouterOutputs } from '@trpc/server';
-import { eq, getTableColumns, sql } from 'drizzle-orm';
+import { eq, getTableColumns } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { agents } from '@/db/schemas/schema';
-import { AgentCreateModel, AgentGetModel } from '@/lib/models/agents';
+import {
+  AgentCreateModel,
+  AgentGetModel,
+  AgentsQueryModel,
+} from '@/lib/models/agents/agents';
 import {
   baseProcedure,
   createTRPCRouter,
@@ -27,17 +30,17 @@ export const agentsRouter = createTRPCRouter({
 
       return createdAgent;
     }),
-  getMany: baseProcedure.query(async () => {
-    return db.select().from(agents);
-  }),
+  getMany: baseProcedure
+    .input((input) => processInput(AgentsQueryModel, input))
+    .query(async () => {
+      return db.select().from(agents);
+    }),
 
   getOne: protectedProcedure
     .input((input) => processInput(AgentGetModel, input))
     .query(async ({ input }) => {
       const [agent] = await db
         .select({
-          // TODO: change to actual count
-          meetingCount: sql<number>`5`,
           ...getTableColumns(agents),
         })
         .from(agents)
@@ -45,7 +48,3 @@ export const agentsRouter = createTRPCRouter({
       return agent;
     }),
 });
-
-export type AgentRouterOutput = inferRouterOutputs<
-  typeof agentsRouter
->['getOne'];

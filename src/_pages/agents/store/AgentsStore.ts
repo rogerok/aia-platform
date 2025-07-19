@@ -1,21 +1,29 @@
 'use client';
-
+import 'client-only';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { errorHandle } from '@/lib/decorators/errorHandle';
 import { successNotify } from '@/lib/decorators/successNotify';
 import { MobxForm } from '@/lib/form/mobxForm';
-import { AgentCreateModel, AgentModel } from '@/lib/models/agents';
+import {
+  AgentCreateModel,
+  AgentModel,
+  AgentsQueryModel,
+} from '@/lib/models/agents/agents';
 import { createStoreContext } from '@/lib/storeAdapter/storeAdapter';
 import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { RequestStore } from '@/lib/stores/requestStore';
 import { useRootStore } from '@/lib/stores/rootStore';
+import 'reflect-metadata';
+
 import { RouterStore } from '@/lib/stores/routerStore';
+import { SearchParamsHandler } from '@/lib/utils/searchParamsHandler';
 import { trpcClient } from '@/trpc/client/trpcClient';
 
 export class AgentsStore {
   data: AgentModel[] = [];
+
   dialog = new BooleanToggleStore(false);
 
   form = new MobxForm<AgentCreateModel>({
@@ -30,6 +38,8 @@ export class AgentsStore {
   getAgentsRequest = new RequestStore(trpcClient.agents.getMany.query);
 
   router: RouterStore;
+
+  searchParamsHandler = new SearchParamsHandler(AgentsQueryModel);
 
   submitRequest = new RequestStore(trpcClient.agents.create.mutate);
 
@@ -52,7 +62,11 @@ export class AgentsStore {
 
   @errorHandle()
   async getAgents() {
-    const resp = await this.getAgentsRequest.execute();
+    const resp = await this.getAgentsRequest.execute({
+      page: 1,
+      pageSize: 1,
+      search: '',
+    });
 
     if (resp.status === 'success') {
       runInAction(() => (this.data = resp.data));

@@ -8,8 +8,9 @@ import { useAgentsStoreHydration } from '@/_pages/agents/store/AgentsStore';
 import { agentsColumns } from '@/_pages/agents/ui/AgentsTableCol';
 import { EmptyListIndicator } from '@/components/custom/EmptyListIndicator/EmptyListIndicator';
 import { DataTable } from '@/components/table/DataTable';
-import { AgentModel } from '@/lib/models/agents';
-import { AgentRouterOutput } from '@/trpc/server/routers/agents';
+import { Button } from '@/components/ui/button';
+import { AgentModel } from '@/lib/models/agents/agents';
+import { AgentRouterOutput } from '@/lib/models/agents/agentsOutput';
 
 interface AgentsProps {
   data: AgentRouterOutput[];
@@ -23,7 +24,7 @@ export const Agents: FC<AgentsProps> = observer((props) => {
 
   return (
     <div className={'bg-muted flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'}>
-      {!store.data.length ? (
+      {store.data.length ? (
         <DataTable columns={agentsColumns} data={store.data} />
       ) : (
         <EmptyListIndicator
@@ -33,6 +34,17 @@ export const Agents: FC<AgentsProps> = observer((props) => {
           title={'Create your first agent'}
         />
       )}
+      <Button
+        onClick={() =>
+          store.searchParamsHandler.setQueryParams({
+            page: 1,
+            pageSize: 20,
+            search: '12ss3',
+          })
+        }
+      >
+        set params
+      </Button>
     </div>
   );
 });
