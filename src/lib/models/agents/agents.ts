@@ -1,13 +1,8 @@
 import { Expose } from 'class-transformer';
-import {
-  IsOptional,
-  IsString,
-  IsUUID,
-  Length,
-  MaxLength,
-} from 'class-validator';
+import { IsString, IsUUID, Length, MaxLength } from 'class-validator';
 import 'reflect-metadata';
 
+import { ListModel } from '@/lib/models/listModel';
 import { BaseQueryParamsModel } from '@/lib/models/paramsModel';
 
 export class AgentModel {
@@ -36,6 +31,8 @@ export class AgentModel {
   userId: string;
 }
 
+export class AgentsListModel extends ListModel<AgentModel> {}
+
 export class AgentCreateModel {
   @IsString()
   instructions: string;
@@ -53,7 +50,6 @@ export class AgentGetModel {
 
 export class AgentsQueryModel extends BaseQueryParamsModel {
   @Expose()
-  @IsOptional()
   @IsString()
   @MaxLength(256)
   search: string = '';

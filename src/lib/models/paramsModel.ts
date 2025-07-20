@@ -6,6 +6,7 @@ import { isNumber } from '@/lib/utils/isNumber';
 export class BaseQueryParamsModel {
   @Expose()
   @IsNumber()
+  @Min(1)
   @Transform((params) => (isNumber(params.value) ? Number(params.value) : 1))
   page: number = 1;
 

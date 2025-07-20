@@ -1,4 +1,4 @@
-import { eq, getTableColumns } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, ilike } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { agents } from '@/db/schemas/schema';
@@ -7,11 +7,7 @@ import {
   AgentGetModel,
   AgentsQueryModel,
 } from '@/lib/models/agents/agents';
-import {
-  baseProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-} from '@/trpc/server/init';
+import { createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { processInput } from '@/trpc/server/validator';
 
 export const agentsRouter = createTRPCRouter({
@@ -30,10 +26,36 @@ export const agentsRouter = createTRPCRouter({
 
       return createdAgent;
     }),
-  getMany: baseProcedure
+  getMany: protectedProcedure
     .input((input) => processInput(AgentsQueryModel, input))
-    .query(async () => {
-      return db.select().from(agents);
+    .query(async ({ ctx, input }) => {
+      const { page, pageSize, search } = input;
+
+      const data = await db
+        .select()
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.auth.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
+        )
+        .orderBy(desc(agents.createdAt), desc(agents.id))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize);
+
+      const total = await db
+        .select({ count: count() })
+        .from(agents)
+        .where(eq(agents.userId, ctx.auth.user.id));
+
+      const totalPages = Math.ceil(total[0].count / pageSize);
+
+      return {
+        items: data,
+        total: total[0].count,
+        totalPages: totalPages,
+      };
     }),
 
   getOne: protectedProcedure

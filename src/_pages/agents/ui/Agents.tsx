@@ -8,24 +8,23 @@ import { useAgentsStoreHydration } from '@/_pages/agents/store/AgentsStore';
 import { agentsColumns } from '@/_pages/agents/ui/AgentsTableCol';
 import { EmptyListIndicator } from '@/components/custom/EmptyListIndicator/EmptyListIndicator';
 import { DataTable } from '@/components/table/DataTable';
-import { Button } from '@/components/ui/button';
-import { AgentModel } from '@/lib/models/agents/agents';
+import { AgentsListModel } from '@/lib/models/agents/agents';
 import { AgentRouterOutput } from '@/lib/models/agents/agentsOutput';
 
 interface AgentsProps {
-  data: AgentRouterOutput[];
+  data: AgentRouterOutput;
   className?: string;
 }
 
 export const Agents: FC<AgentsProps> = observer((props) => {
   const store = useAgentsStoreHydration((store) =>
-    store.init(plainToInstance(AgentModel, props.data)),
+    store.hydrate(plainToInstance(AgentsListModel, props.data)),
   );
 
   return (
     <div className={'bg-muted flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'}>
-      {store.data.length ? (
-        <DataTable columns={agentsColumns} data={store.data} />
+      {store.data.isNotEmpty ? (
+        <DataTable columns={agentsColumns} data={store.data.items} />
       ) : (
         <EmptyListIndicator
           description={
@@ -34,17 +33,6 @@ export const Agents: FC<AgentsProps> = observer((props) => {
           title={'Create your first agent'}
         />
       )}
-      <Button
-        onClick={() =>
-          store.searchParamsHandler.setQueryParams({
-            page: 1,
-            pageSize: 20,
-            search: '12ss3',
-          })
-        }
-      >
-        set params
-      </Button>
     </div>
   );
 });

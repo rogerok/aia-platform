@@ -4,4 +4,4 @@ import { agentsRouter } from '@/trpc/server/routers/agents';
 
 export type AgentRouterOutput = inferRouterOutputs<
   typeof agentsRouter
->['getOne'];
+>['getMany'];

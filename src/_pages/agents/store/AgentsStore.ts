@@ -8,21 +8,21 @@ import { successNotify } from '@/lib/decorators/successNotify';
 import { MobxForm } from '@/lib/form/mobxForm';
 import {
   AgentCreateModel,
-  AgentModel,
+  AgentsListModel,
   AgentsQueryModel,
 } from '@/lib/models/agents/agents';
 import { createStoreContext } from '@/lib/storeAdapter/storeAdapter';
 import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { RequestStore } from '@/lib/stores/requestStore';
-import { useRootStore } from '@/lib/stores/rootStore';
 import 'reflect-metadata';
 
+import { useRootStore } from '@/lib/stores/rootStore';
 import { RouterStore } from '@/lib/stores/routerStore';
 import { SearchParamsHandler } from '@/lib/utils/searchParamsHandler';
 import { trpcClient } from '@/trpc/client/trpcClient';
 
 export class AgentsStore {
-  data: AgentModel[] = [];
+  data: AgentsListModel = new AgentsListModel();
 
   dialog = new BooleanToggleStore(false);
 
@@ -39,7 +39,7 @@ export class AgentsStore {
 
   router: RouterStore;
 
-  searchParamsHandler = new SearchParamsHandler(AgentsQueryModel);
+  searchParamsHandler: SearchParamsHandler<AgentsQueryModel> | undefined;
 
   submitRequest = new RequestStore(trpcClient.agents.create.mutate);
 
@@ -61,20 +61,17 @@ export class AgentsStore {
   }
 
   @errorHandle()
-  async getAgents() {
-    const resp = await this.getAgentsRequest.execute({
-      page: 1,
-      pageSize: 1,
-      search: '',
-    });
+  async getAgents(params: AgentsQueryModel) {
+    const resp = await this.getAgentsRequest.execute(params);
 
     if (resp.status === 'success') {
-      runInAction(() => (this.data = resp.data));
+      runInAction(() => (this.data = new AgentsListModel(resp.data)));
     }
   }
 
-  init(data: AgentModel[]): void {
-    this.data.push(...data);
+  hydrate(data: AgentsListModel): void {
+    this.data = new AgentsListModel(data);
+    this.searchParamsHandler = new SearchParamsHandler(AgentsQueryModel);
   }
 
   @errorHandle()
@@ -87,7 +84,10 @@ export class AgentsStore {
       runInAction(() => {
         this.closeFormDialog();
       });
-      await this.getAgents();
+
+      await this.getAgents(
+        this.searchParamsHandler?.getPlain() ?? new AgentsQueryModel(),
+      );
     }
   }
 }
