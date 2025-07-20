@@ -11,16 +11,6 @@ import { handleIsNotAuth } from '@/lib/authActions';
 import { AgentsQueryModel } from '@/lib/models/agents/agents';
 import { trpcServerClient } from '@/trpc/client/trpcServerClient';
 
-interface AgentsDataProps {
-  searchParams: AgentsQueryModel;
-}
-
-const AgentsData = async (props: AgentsDataProps) => {
-  const data = await trpcServerClient.agents.getMany.query(props.searchParams);
-
-  return <Agents data={data} />;
-};
-
 interface PageProps {
   searchParams: Promise<AgentsQueryModel>;
 }
@@ -35,12 +25,14 @@ const Page = async ({ searchParams }: PageProps) => {
     exposeDefaultValues: true,
   });
 
+  const data = await trpcServerClient.agents.getMany.query(filters);
+
   return (
     <ErrorBoundary fallback={<ShowError title={'Agents loading error'} />}>
       <Suspense fallback={<Loader />}>
         <AgentsStoreProvider>
           <AgentsHeader />
-          <AgentsData searchParams={filters} />
+          <Agents data={data} />
         </AgentsStoreProvider>
       </Suspense>
     </ErrorBoundary>
