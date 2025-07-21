@@ -9,11 +9,12 @@ import { BaseQueryParamsModel } from '@/lib/models/paramsModel';
 export class SearchParamsHandler<T extends BaseQueryParamsModel> {
   cls: new () => T;
 
-  params: T;
+  params: T = this.getPlain();
 
   constructor(cls: new () => T) {
     this.cls = cls;
-    this.params = this.getPlain();
+    // this.params = this.getPlain();
+
     makeAutoObservable(
       this,
       {},

@@ -69,6 +69,15 @@ export class AgentsStore {
     }
   }
 
+  async handlePaginationChange(page: number) {
+    if (this.searchParamsHandler) {
+      this.searchParamsHandler.setQueryParams({
+        ...this.searchParamsHandler.params,
+        page,
+      });
+    }
+  }
+
   hydrate(data: AgentsListModel): void {
     this.data = new AgentsListModel(data);
     this.searchParamsHandler = new SearchParamsHandler(AgentsQueryModel);
@@ -85,9 +94,8 @@ export class AgentsStore {
         this.closeFormDialog();
       });
 
-      await this.getAgents(
-        this.searchParamsHandler?.getPlain() ?? new AgentsQueryModel(),
-      );
+      this.searchParamsHandler?.setQueryParams(new AgentsQueryModel());
+      await this.getAgents(new AgentsQueryModel());
     }
   }
 }
