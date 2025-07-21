@@ -1,5 +1,6 @@
 'use client';
 import 'client-only';
+import 'reflect-metadata';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { makeAutoObservable, runInAction } from 'mobx';
 
@@ -14,8 +15,6 @@ import {
 import { createStoreContext } from '@/lib/storeAdapter/storeAdapter';
 import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { RequestStore } from '@/lib/stores/requestStore';
-import 'reflect-metadata';
-
 import { useRootStore } from '@/lib/stores/rootStore';
 import { RouterStore } from '@/lib/stores/routerStore';
 import { SearchParamsHandler } from '@/lib/utils/searchParamsHandler';

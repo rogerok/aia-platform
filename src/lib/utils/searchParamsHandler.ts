@@ -1,6 +1,6 @@
 'use client';
 
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { makeAutoObservable } from 'mobx';
 import { makeLoggable } from 'mobx-log';
 
@@ -9,11 +9,11 @@ import { BaseQueryParamsModel } from '@/lib/models/paramsModel';
 export class SearchParamsHandler<T extends BaseQueryParamsModel> {
   cls: new () => T;
 
-  params: T = this.getPlain();
+  params: T;
 
   constructor(cls: new () => T) {
     this.cls = cls;
-    // this.params = this.getPlain();
+    this.params = this.getPlain();
 
     makeAutoObservable(
       this,
@@ -34,11 +34,13 @@ export class SearchParamsHandler<T extends BaseQueryParamsModel> {
       new URLSearchParams(window.location.search),
     );
 
-    return plainToInstance(this.cls, params, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-      exposeDefaultValues: true,
-    });
+    return instanceToPlain(
+      plainToInstance(this.cls, params, {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+        exposeDefaultValues: true,
+      }),
+    ) as T;
   }
 
   pushHistory(params: string) {

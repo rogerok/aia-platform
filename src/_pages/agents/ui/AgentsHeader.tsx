@@ -1,6 +1,5 @@
 'use client';
 
-import { XCircleIcon } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
@@ -15,25 +14,15 @@ interface AgentsHeaderProps {
 }
 
 export const AgentsHeader: FC<AgentsHeaderProps> = observer((props) => {
-  const { dialog, searchParamsHandler } = useAgentsStore();
+  const { dialog } = useAgentsStore();
 
   return (
-    <div className={cn('flex w-full flex-col p-4 md:p-8', props.className)}>
+    <div className={cn('p-x-4 md:p-x-8 flex w-full flex-col', props.className)}>
       <div className={'flex w-full items-center justify-between'}>
         <h5 className={'text-xl' + ' font-medium'}>My agents</h5>
         <Button onClick={dialog.setTrue}>New agent</Button>
       </div>
-      <div className={'flex items-center gap-x-2'}>
-        <AgentsSearchFilter />
-        {!!searchParamsHandler?.params.search && (
-          <Button
-            onClick={() => searchParamsHandler?.setParam('search', '')}
-            variant={'outline'}
-          >
-            <XCircleIcon />
-          </Button>
-        )}
-      </div>
+      <AgentsSearchFilter />
       <AgentDialog />
     </div>
   );
