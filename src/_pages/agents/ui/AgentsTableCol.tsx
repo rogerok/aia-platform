@@ -5,7 +5,7 @@ import { CornerDownRightIcon, VideoIcon } from 'lucide-react';
 
 import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAvatar';
 import { Badge } from '@/components/ui/badge';
-import { AgentModel } from '@/lib/models/agents';
+import { AgentModel } from '@/lib/models/agents/agents';
 
 export const agentsColumns: ColumnDef<AgentModel>[] = [
   {
@@ -37,7 +37,7 @@ export const agentsColumns: ColumnDef<AgentModel>[] = [
       >
         <VideoIcon />
         {/*{row.original.meetingCount}*/}5
-        {row.original.meetingCount === 1 ? 'meeting' : 'meetings'}
+        {/*{row.original.meetingCount === 1 ? 'meeting' : 'meetings'}*/}
       </Badge>
     ),
     header: 'Meetings',

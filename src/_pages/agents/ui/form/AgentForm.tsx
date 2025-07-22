@@ -9,7 +9,7 @@ import { TextAreaField } from '@/components/form/fields/TextAreaField/TextAreaFi
 import { TextField } from '@/components/form/fields/TextField/TextField';
 import { Form } from '@/components/form/Form/Form';
 import { Button } from '@/components/ui/button';
-import { AgentCreateModel } from '@/lib/models/agents';
+import { AgentCreateModel } from '@/lib/models/agents/agents';
 import { cn } from '@/lib/utils';
 
 interface AgentFormProps {

@@ -1,14 +1,13 @@
-import { inferRouterOutputs } from '@trpc/server';
-import { eq, getTableColumns, sql } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, ilike } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { agents } from '@/db/schemas/schema';
-import { AgentCreateModel, AgentGetModel } from '@/lib/models/agents';
 import {
-  baseProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-} from '@/trpc/server/init';
+  AgentCreateModel,
+  AgentGetModel,
+  AgentsQueryModel,
+} from '@/lib/models/agents/agents';
+import { createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { processInput } from '@/trpc/server/validator';
 
 export const agentsRouter = createTRPCRouter({
@@ -27,17 +26,48 @@ export const agentsRouter = createTRPCRouter({
 
       return createdAgent;
     }),
-  getMany: baseProcedure.query(async () => {
-    return db.select().from(agents);
-  }),
+  getMany: protectedProcedure
+    .input((input) => processInput(AgentsQueryModel, input))
+    .query(async ({ ctx, input }) => {
+      const { page, pageSize, search } = input;
+
+      const data = await db
+        .select()
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.auth.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
+        )
+        .orderBy(desc(agents.createdAt), desc(agents.id))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize);
+
+      const total = await db
+        .select({ count: count() })
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.auth.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
+        );
+
+      const totalPages = Math.ceil(total[0].count / pageSize);
+
+      return {
+        items: data,
+        total: total[0].count,
+        totalPages: totalPages,
+      };
+    }),
 
   getOne: protectedProcedure
     .input((input) => processInput(AgentGetModel, input))
     .query(async ({ input }) => {
       const [agent] = await db
         .select({
-          // TODO: change to actual count
-          meetingCount: sql<number>`5`,
           ...getTableColumns(agents),
         })
         .from(agents)
@@ -45,7 +75,3 @@ export const agentsRouter = createTRPCRouter({
       return agent;
     }),
 });
-
-export type AgentRouterOutput = inferRouterOutputs<
-  typeof agentsRouter
->['getOne'];

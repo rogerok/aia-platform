@@ -1,21 +1,28 @@
 'use client';
-
+import 'client-only';
+import 'reflect-metadata';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { errorHandle } from '@/lib/decorators/errorHandle';
 import { successNotify } from '@/lib/decorators/successNotify';
 import { MobxForm } from '@/lib/form/mobxForm';
-import { AgentCreateModel, AgentModel } from '@/lib/models/agents';
+import {
+  AgentCreateModel,
+  AgentsListModel,
+  AgentsQueryModel,
+} from '@/lib/models/agents/agents';
 import { createStoreContext } from '@/lib/storeAdapter/storeAdapter';
 import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { RequestStore } from '@/lib/stores/requestStore';
 import { useRootStore } from '@/lib/stores/rootStore';
 import { RouterStore } from '@/lib/stores/routerStore';
+import { SearchParamsHandler } from '@/lib/utils/searchParamsHandler';
 import { trpcClient } from '@/trpc/client/trpcClient';
 
 export class AgentsStore {
-  data: AgentModel[] = [];
+  data: AgentsListModel = new AgentsListModel();
+
   dialog = new BooleanToggleStore(false);
 
   form = new MobxForm<AgentCreateModel>({
@@ -30,6 +37,8 @@ export class AgentsStore {
   getAgentsRequest = new RequestStore(trpcClient.agents.getMany.query);
 
   router: RouterStore;
+
+  searchParamsHandler: SearchParamsHandler<AgentsQueryModel> | undefined;
 
   submitRequest = new RequestStore(trpcClient.agents.create.mutate);
 
@@ -51,16 +60,26 @@ export class AgentsStore {
   }
 
   @errorHandle()
-  async getAgents() {
-    const resp = await this.getAgentsRequest.execute();
+  async getAgents(params: AgentsQueryModel) {
+    const resp = await this.getAgentsRequest.execute(params);
 
     if (resp.status === 'success') {
-      runInAction(() => (this.data = resp.data));
+      runInAction(() => (this.data = new AgentsListModel(resp.data)));
     }
   }
 
-  init(data: AgentModel[]): void {
-    this.data.push(...data);
+  async handlePaginationChange(page: number) {
+    if (this.searchParamsHandler) {
+      this.searchParamsHandler.setQueryParams({
+        ...this.searchParamsHandler.params,
+        page,
+      });
+    }
+  }
+
+  hydrate(data: AgentsListModel): void {
+    this.data = new AgentsListModel(data);
+    this.searchParamsHandler = new SearchParamsHandler(AgentsQueryModel);
   }
 
   @errorHandle()
@@ -73,7 +92,9 @@ export class AgentsStore {
       runInAction(() => {
         this.closeFormDialog();
       });
-      await this.getAgents();
+
+      this.searchParamsHandler?.setQueryParams(new AgentsQueryModel(), false);
+      await this.getAgents(new AgentsQueryModel());
     }
   }
 }
