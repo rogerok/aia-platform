@@ -30,7 +30,6 @@ const Page = async ({ searchParams }: PageProps) => {
     <ErrorBoundary fallback={<ShowError title={'Agents loading error'} />}>
       <Suspense fallback={<Loader />}>
         <AgentsStoreProvider>
-          {/*<AgentsHeader />*/}
           <Agents data={data} />
         </AgentsStoreProvider>
       </Suspense>
