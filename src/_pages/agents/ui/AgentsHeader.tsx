@@ -17,7 +17,12 @@ export const AgentsHeader: FC<AgentsHeaderProps> = observer((props) => {
   const { dialog } = useAgentsStore();
 
   return (
-    <div className={cn('p-x-4 md:p-x-8 flex w-full flex-col', props.className)}>
+    <div
+      className={cn(
+        'p-x-4 md:p-x-8 flex w-full flex-col pt-4',
+        props.className,
+      )}
+    >
       <div className={'flex w-full items-center justify-between'}>
         <h5 className={'text-xl' + ' font-medium'}>My agents</h5>
         <Button onClick={dialog.setTrue}>New agent</Button>
