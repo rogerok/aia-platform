@@ -47,7 +47,12 @@ export const agentsRouter = createTRPCRouter({
       const total = await db
         .select({ count: count() })
         .from(agents)
-        .where(eq(agents.userId, ctx.auth.user.id));
+        .where(
+          and(
+            eq(agents.userId, ctx.auth.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
+        );
 
       const totalPages = Math.ceil(total[0].count / pageSize);
 
