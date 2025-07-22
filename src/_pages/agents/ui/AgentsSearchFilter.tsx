@@ -12,9 +12,7 @@ import { AgentsQueryModel } from '@/lib/models/agents/agents';
 export const AgentsSearchFilter: FC = observer(() => {
   const { searchParamsHandler } = useAgentsStore();
 
-  const [filter, setFilter] = useState(
-    searchParamsHandler?.params.search ?? '',
-  );
+  const [filter, setFilter] = useState<string>('');
 
   return (
     <div className={'flex flex-col gap-2'}>

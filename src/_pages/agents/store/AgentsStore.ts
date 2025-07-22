@@ -93,7 +93,7 @@ export class AgentsStore {
         this.closeFormDialog();
       });
 
-      this.searchParamsHandler?.setQueryParams(new AgentsQueryModel());
+      this.searchParamsHandler?.setQueryParams(new AgentsQueryModel(), false);
       await this.getAgents(new AgentsQueryModel());
     }
   }
