@@ -38,12 +38,7 @@ export const Agents: FC<AgentsProps> = observer((props) => {
           )}
         </>
       ) : (
-        <EmptyListIndicator
-          description={
-            'Create agent to join your meetings. Each agent will follow your instructions and can interact with participants during the call.'
-          }
-          title={'Create your first agent'}
-        />
+        <EmptyListIndicator title={'There is no agents'} />
       )}
     </div>
   );
