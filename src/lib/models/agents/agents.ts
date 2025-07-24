@@ -44,7 +44,6 @@ export class AgentCreateModel {
 
 export class AgentGetModel {
   @IsString()
-  @IsUUID()
   id: string;
 }
 

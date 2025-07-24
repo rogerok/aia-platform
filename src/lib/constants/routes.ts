@@ -1,4 +1,5 @@
 export const routes = {
+  agent: (id: string) => `/agents/${id}`,
   agents: () => '/agents',
   home: () => '/',
   meetings: () => '/meetings',
