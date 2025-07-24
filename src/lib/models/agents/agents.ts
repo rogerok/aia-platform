@@ -53,3 +53,20 @@ export class AgentsQueryModel extends BaseQueryParamsModel {
   @MaxLength(256)
   search: string = '';
 }
+
+export class AgentDeleteModel {
+  @IsString()
+  id: string;
+}
+
+export class AgentUpdateModel {
+  @IsString()
+  id: string;
+
+  @IsString()
+  instructions: string;
+
+  @IsString()
+  @Length(2, 256)
+  name: string;
+}

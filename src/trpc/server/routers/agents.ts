@@ -1,12 +1,14 @@
 import { TRPCError } from '@trpc/server';
-import { and, count, desc, eq, getTableColumns, ilike } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, ilike, sql } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { agents } from '@/db/schemas/schema';
 import {
   AgentCreateModel,
+  AgentDeleteModel,
   AgentGetModel,
   AgentsQueryModel,
+  AgentUpdateModel,
 } from '@/lib/models/agents/agents';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { processInput } from '@/trpc/server/validator';
@@ -27,6 +29,16 @@ export const agentsRouter = createTRPCRouter({
 
       return createdAgent;
     }),
+  delete: protectedProcedure
+    .input((input) => processInput(AgentDeleteModel, input))
+    .mutation(async ({ ctx, input }) => {
+      return db
+        .delete(agents)
+        .where(
+          and(eq(agents.userId, ctx.auth.user.id), eq(agents.id, input.id)),
+        );
+    }),
+
   getMany: protectedProcedure
     .input((input) => processInput(AgentsQueryModel, input))
     .query(async ({ ctx, input }) => {
@@ -69,6 +81,8 @@ export const agentsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const [agent] = await db
         .select({
+          // TODO: add real value
+          meetingCount: sql<number>`5`,
           ...getTableColumns(agents),
         })
         .from(agents)
@@ -82,5 +96,19 @@ export const agentsRouter = createTRPCRouter({
         });
       }
       return agent;
+    }),
+
+  update: protectedProcedure
+    .input((input) => processInput(AgentUpdateModel, input))
+    .mutation(async ({ ctx, input }) => {
+      const { id, instructions, name } = input;
+      const [updatedAgent] = await db
+        .update(agents)
+        .set({
+          instructions: instructions,
+          name: name,
+        })
+        .where(and(eq(agents.id, id), eq(agents.userId, ctx.auth.user.id)))
+        .returning();
     }),
 });

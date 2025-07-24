@@ -8,6 +8,7 @@ import { useAgentStoreHydration } from '@/_pages/agent/store/agentStore';
 import { AgentActionsDropdown } from '@/_pages/agent/ui/AgentActionsDropdown';
 import { AgentBreadcrumbs } from '@/_pages/agent/ui/AgentBreadcrumbs';
 import { AgentContent } from '@/_pages/agent/ui/AgentContent';
+import { AgentDeleteDialog } from '@/_pages/agent/ui/AgentDeleteDialog';
 import { AgentModel } from '@/lib/models/agents/agents';
 import { AgentGetOneRouterOutput } from '@/lib/models/agents/agentsOutput';
 
@@ -21,14 +22,17 @@ export const Agent: FC<AgentProps> = observer((props) => {
   );
 
   return (
-    store.data && (
-      <div>
-        <div className={'flex items-center justify-between p-4'}>
-          <AgentBreadcrumbs />
-          <AgentActionsDropdown />
+    store.agent && (
+      <>
+        <div className={'bg-muted flex flex-1 flex-col gap-y-4 p-4'}>
+          <div className={'flex items-center justify-between'}>
+            <AgentBreadcrumbs />
+            <AgentActionsDropdown />
+          </div>
+          <AgentContent />
         </div>
-        <AgentContent />
-      </div>
+        <AgentDeleteDialog />
+      </>
     )
   );
 });
