@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 import { cn } from '@/lib/utils';
 import { generateRandomLinearGradient } from '@/lib/utils/randomColorGenerator';
@@ -72,7 +72,7 @@ interface GeneratedAvatarProps {
   size?: 'lg' | 'md' | 'sm';
 }
 
-export const GeneratedAvatar: FC<GeneratedAvatarProps> = (props) => {
+export const GeneratedAvatar: FC<GeneratedAvatarProps> = memo((props) => {
   const { className, firstName, lastName, size } = props;
 
   const gradient = generateRandomLinearGradient();
@@ -87,4 +87,4 @@ export const GeneratedAvatar: FC<GeneratedAvatarProps> = (props) => {
       {makeDecision(ruleData, firstName, lastName)}
     </div>
   );
-};
+});

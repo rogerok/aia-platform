@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { and, count, desc, eq, getTableColumns, ilike } from 'drizzle-orm';
 
 import { db } from '@/db';
@@ -65,13 +66,21 @@ export const agentsRouter = createTRPCRouter({
 
   getOne: protectedProcedure
     .input((input) => processInput(AgentGetModel, input))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const [agent] = await db
         .select({
           ...getTableColumns(agents),
         })
         .from(agents)
-        .where(eq(agents.id, input.id));
+        .where(
+          and(eq(agents.id, input.id), eq(agents.userId, ctx.auth.user.id)),
+        );
+      if (!agent) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Agent not found',
+        });
+      }
       return agent;
     }),
 });

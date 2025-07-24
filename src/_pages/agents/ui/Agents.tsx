@@ -11,10 +11,10 @@ import { EmptyListIndicator } from '@/components/custom/EmptyListIndicator/Empty
 import { DataPagination } from '@/components/table/DataPagination';
 import { DataTable } from '@/components/table/DataTable';
 import { AgentsListModel } from '@/lib/models/agents/agents';
-import { AgentRouterOutput } from '@/lib/models/agents/agentsOutput';
+import { AgentsGetManyRouterOutput } from '@/lib/models/agents/agentsOutput';
 
 interface AgentsProps {
-  data: AgentRouterOutput;
+  data: AgentsGetManyRouterOutput;
   className?: string;
 }
 
