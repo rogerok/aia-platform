@@ -59,7 +59,7 @@ export class AgentDeleteModel {
   id: string;
 }
 
-export class AgentUpdateModel {
+export class AgentEditModel {
   @IsString()
   id: string;
 

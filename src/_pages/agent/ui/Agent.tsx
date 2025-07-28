@@ -9,6 +9,7 @@ import { AgentActionsDropdown } from '@/_pages/agent/ui/AgentActionsDropdown';
 import { AgentBreadcrumbs } from '@/_pages/agent/ui/AgentBreadcrumbs';
 import { AgentContent } from '@/_pages/agent/ui/AgentContent';
 import { AgentDeleteDialog } from '@/_pages/agent/ui/AgentDeleteDialog';
+import { AgentEditForm } from '@/_pages/agent/ui/AgentEditForm';
 import { AgentModel } from '@/lib/models/agents/agents';
 import { AgentGetOneRouterOutput } from '@/lib/models/agents/agentsOutput';
 
@@ -32,6 +33,7 @@ export const Agent: FC<AgentProps> = observer((props) => {
           <AgentContent />
         </div>
         <AgentDeleteDialog />
+        <AgentEditForm />
       </>
     )
   );

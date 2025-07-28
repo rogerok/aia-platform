@@ -6,9 +6,9 @@ import { agents } from '@/db/schemas/schema';
 import {
   AgentCreateModel,
   AgentDeleteModel,
+  AgentEditModel,
   AgentGetModel,
   AgentsQueryModel,
-  AgentUpdateModel,
 } from '@/lib/models/agents/agents';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { processInput } from '@/trpc/server/validator';
@@ -99,7 +99,7 @@ export const agentsRouter = createTRPCRouter({
     }),
 
   update: protectedProcedure
-    .input((input) => processInput(AgentUpdateModel, input))
+    .input((input) => processInput(AgentEditModel, input))
     .mutation(async ({ ctx, input }) => {
       const { id, instructions, name } = input;
       const [updatedAgent] = await db
