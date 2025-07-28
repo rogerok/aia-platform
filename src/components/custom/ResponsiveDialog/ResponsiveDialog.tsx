@@ -57,7 +57,6 @@ export const ResponsiveDialog: FC<ResponsiveDialogProps> = (props) => {
         }
         props.onOpenChange?.(open);
       }}
-      // onOpenChange={props.onOpenChange}
       open={props.open}
     >
       <DialogContent>

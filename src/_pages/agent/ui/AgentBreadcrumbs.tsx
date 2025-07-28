@@ -17,7 +17,7 @@ export const AgentBreadcrumbs: FC = observer(() => {
   const store = useAgentStore();
 
   return (
-    store.data && (
+    store.agent && (
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -30,7 +30,7 @@ export const AgentBreadcrumbs: FC = observer(() => {
           />
           <BreadcrumbItem>
             <BreadcrumbPage className={'text-xl font-medium'}>
-              {store.data.name}
+              {store.agent.name}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
