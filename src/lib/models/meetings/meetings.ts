@@ -14,3 +14,4 @@ export class MeetingsQueryModel extends BaseQueryParamsModel {
   @MaxLength(256)
   search: string = '';
 }
+export class MeetingModel {}

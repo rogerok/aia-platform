@@ -1,4 +1,9 @@
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+
 import { Meetings } from '@/_pages/meetings/ui/Meetings';
+import { ShowError } from '@/components/custom/Error/ShowError';
+import { Loader } from '@/components/custom/Loader/Loader';
 import { trpcServerClient } from '@/trpc/client/trpcServerClient';
 
 const Page = async () => {
@@ -8,7 +13,15 @@ const Page = async () => {
     search: '',
   });
 
-  return <Meetings data={data} />;
+  return (
+    <Suspense fallback={<Loader />}>
+      <ErrorBoundary
+        fallback={<ShowError title={'Meetings list loading error'} />}
+      >
+        <Meetings data={data} />
+      </ErrorBoundary>
+    </Suspense>
+  );
 };
 
 export default Page;
