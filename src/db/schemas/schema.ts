@@ -1,5 +1,6 @@
 import {
   boolean,
+  pgEnum,
   pgTable,
   text,
   timestamp,
@@ -74,6 +75,39 @@ export const agents = pgTable('agents', {
     .$defaultFn(() => nanoid()),
   instructions: text('instructions').notNull(),
   name: varchar('name', { length: 256 }).notNull(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, {
+      onDelete: 'cascade',
+    }),
+});
+
+export const meetingStatus = pgEnum('meeting_status', [
+  'upcoming',
+  'active',
+  'completed',
+  'processing',
+  'canceled',
+]);
+
+export const meetings = pgTable('meetings', {
+  agentId: text('agent_id')
+    .notNull()
+    .references(() => agents.id, {
+      onDelete: 'cascade',
+    }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  endedAt: timestamp('ended_at'),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  name: varchar('name', { length: 256 }).notNull(),
+  recordingUrl: text('recording_url'),
+  startedAt: timestamp('started_at'),
+  status: meetingStatus('status').notNull().default('upcoming'),
+  summary: text('summary'),
+  transcriptUrl: text('transcript_url'),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   userId: text('user_id')
     .notNull()
