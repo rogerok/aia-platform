@@ -17,7 +17,7 @@ export const Logo: FC<LogoProps> = (props) => {
       alt={'logo'}
       className={cn(props.className)}
       height={width}
-      src={'./logo.svg'}
+      src={'/logo.svg'}
       width={height}
     />
   );
