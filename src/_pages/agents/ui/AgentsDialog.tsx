@@ -5,7 +5,7 @@ import { useAgentsStore } from '@/_pages/agents/store/agentsStore';
 import { AgentForm } from '@/_pages/agents/ui/form/AgentForm';
 import { ResponsiveDialog } from '@/components/custom/ResponsiveDialog/ResponsiveDialog';
 
-export const AgentDialog: FC = observer(() => {
+export const AgentsDialog: FC = observer(() => {
   const { dialog, form } = useAgentsStore();
 
   return (

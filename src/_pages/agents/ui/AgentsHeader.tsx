@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
 import { useAgentsStore } from '@/_pages/agents/store/agentsStore';
-import { AgentDialog } from '@/_pages/agents/ui/AgentDialog';
+import { AgentsDialog } from '@/_pages/agents/ui/AgentsDialog';
 import { AgentsSearchFilter } from '@/_pages/agents/ui/AgentsSearchFilter';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export const AgentsHeader: FC<AgentsHeaderProps> = observer((props) => {
         <Button onClick={dialog.setTrue}>New agent</Button>
       </div>
       <AgentsSearchFilter />
-      <AgentDialog />
+      <AgentsDialog />
     </div>
   );
 });
