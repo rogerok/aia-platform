@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
-import { useAgentsStore } from '@/_pages/agents/store/AgentsStore';
+import { useAgentsStore } from '@/_pages/agents/store/agentsStore';
 import { AgentForm } from '@/_pages/agents/ui/form/AgentForm';
 import { ResponsiveDialog } from '@/components/custom/ResponsiveDialog/ResponsiveDialog';
 

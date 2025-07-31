@@ -3,7 +3,7 @@
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
-import { useAgentsStore } from '@/_pages/agents/store/AgentsStore';
+import { useAgentsStore } from '@/_pages/agents/store/agentsStore';
 import { AgentFormAvatar } from '@/_pages/agents/ui/form/AgentFormAvatar';
 import { TextAreaField } from '@/components/form/fields/TextAreaField/TextAreaField';
 import { TextField } from '@/components/form/fields/TextField/TextField';

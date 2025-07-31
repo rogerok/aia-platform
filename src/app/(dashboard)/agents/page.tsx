@@ -2,7 +2,7 @@ import { plainToInstance } from 'class-transformer';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { AgentsStoreProvider } from '@/_pages/agents/store/AgentsStore';
+import { AgentsStoreProvider } from '@/_pages/agents/store/agentsStore';
 import { Agents } from '@/_pages/agents/ui/Agents';
 import { ShowError } from '@/components/custom/Error/ShowError';
 import { Loader } from '@/components/custom/Loader/Loader';
