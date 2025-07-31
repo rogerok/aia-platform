@@ -4,7 +4,7 @@ import { plainToInstance } from 'class-transformer';
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
-import { useAgentsStoreHydration } from '@/_pages/agents/store/AgentsStore';
+import { useAgentsStoreHydration } from '@/_pages/agents/store/agentsStore';
 import { AgentsHeader } from '@/_pages/agents/ui/AgentsHeader';
 import { agentsColumns } from '@/_pages/agents/ui/AgentsTableCol';
 import { EmptyListIndicator } from '@/components/custom/EmptyListIndicator/EmptyListIndicator';

@@ -4,7 +4,7 @@ import { SearchIcon, XCircleIcon } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import { FC, useState } from 'react';
 
-import { useAgentsStore } from '@/_pages/agents/store/AgentsStore';
+import { useAgentsStore } from '@/_pages/agents/store/agentsStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AgentsQueryModel } from '@/lib/models/agents/agents';

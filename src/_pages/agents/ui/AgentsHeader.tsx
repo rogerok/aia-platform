@@ -3,7 +3,7 @@
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
-import { useAgentsStore } from '@/_pages/agents/store/AgentsStore';
+import { useAgentsStore } from '@/_pages/agents/store/agentsStore';
 import { AgentDialog } from '@/_pages/agents/ui/AgentDialog';
 import { AgentsSearchFilter } from '@/_pages/agents/ui/AgentsSearchFilter';
 import { Button } from '@/components/ui/button';
