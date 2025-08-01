@@ -2,6 +2,7 @@
 import 'client-only';
 import 'reflect-metadata';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { plainToInstance } from 'class-transformer';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { errorHandle } from '@/lib/decorators/errorHandle';
@@ -9,6 +10,7 @@ import { successNotify } from '@/lib/decorators/successNotify';
 import { MobxForm } from '@/lib/form/mobxForm';
 import {
   AgentCreateModel,
+  AgentModel,
   AgentsListModel,
   AgentsQueryModel,
 } from '@/lib/models/agents/agents';
@@ -64,7 +66,16 @@ export class AgentsStore {
     const resp = await this.getAgentsRequest.execute(params);
 
     if (resp.status === 'success') {
-      runInAction(() => (this.data = new AgentsListModel(resp.data)));
+      runInAction(
+        () =>
+          (this.data = new AgentsListModel({
+            items: resp.data.items.map((agent) =>
+              plainToInstance(AgentModel, agent),
+            ),
+            total: resp.data.total,
+            totalPages: resp.data.totalPages,
+          })),
+      );
     }
   }
 

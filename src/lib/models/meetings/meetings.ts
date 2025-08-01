@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsIn, IsString, MaxLength } from 'class-validator';
+import { IsIn, IsString, Length, MaxLength, ValidateIf } from 'class-validator';
 
 import { meetingStatusList } from '@/db/schemas/schema';
 import { ListModel } from '@/lib/models/listModel';
@@ -26,6 +26,7 @@ export class MeetingModel {
   @IsString()
   createdAt: string;
 
+  @ValidateIf((_, value) => value !== null)
   @IsString()
   endedAt: string;
 
@@ -58,3 +59,24 @@ export class MeetingModel {
 }
 
 export class MeetingsListModel extends ListModel<MeetingModel> {}
+
+export class MeetingCreateModel {
+  @IsString()
+  agentId: string = '';
+
+  @IsString()
+  @Length(2, 256)
+  name: string = '';
+}
+
+export class MeetingEditModel {
+  @IsString()
+  agentId: string;
+
+  @IsString()
+  id: string;
+
+  @IsString()
+  @Length(2, 256)
+  name: string;
+}
