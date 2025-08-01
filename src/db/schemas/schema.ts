@@ -83,13 +83,15 @@ export const agents = pgTable('agents', {
     }),
 });
 
-export const meetingStatus = pgEnum('meeting_status', [
+export const meetingStatusList = [
   'upcoming',
   'active',
   'completed',
   'processing',
   'canceled',
-]);
+] as const;
+
+export const meetingStatus = pgEnum('meeting_status', meetingStatusList);
 
 export const meetings = pgTable('meetings', {
   agentId: text('agent_id')
