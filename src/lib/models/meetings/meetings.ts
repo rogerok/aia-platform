@@ -1,11 +1,20 @@
 import { Expose } from 'class-transformer';
-import { IsIn, IsString, Length, MaxLength, ValidateIf } from 'class-validator';
+import {
+  IsIn,
+  IsNumber,
+  IsString,
+  Length,
+  MaxLength,
+  ValidateIf,
+  ValidateNested,
+} from 'class-validator';
 
 import { meetingStatusList } from '@/db/schemas/schema';
+import { AgentModel } from '@/lib/models/agents/agents';
 import { ListModel } from '@/lib/models/listModel';
 import { BaseQueryParamsModel } from '@/lib/models/paramsModel';
 
-type MeetingStatusType = (typeof meetingStatusList)[number];
+export type MeetingStatusType = (typeof meetingStatusList)[number];
 
 export class MeetingGetModel {
   @IsString()
@@ -57,8 +66,15 @@ export class MeetingModel {
   @IsString()
   userId: string;
 }
+export class MeetingsListItemModel extends MeetingModel {
+  @ValidateNested()
+  agent: AgentModel;
 
-export class MeetingsListModel extends ListModel<MeetingModel> {}
+  @IsNumber()
+  duration: number;
+}
+
+export class MeetingsListModel extends ListModel<MeetingsListItemModel> {}
 
 export class MeetingCreateModel {
   @IsString()

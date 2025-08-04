@@ -35,11 +35,11 @@ export class ListModel<T> {
     return page >= this.totalPages;
   }
 
-  get isEmpty(): boolean {
-    return this.items.length === 0;
+  get hasItems(): boolean {
+    return !!this.items.length;
   }
 
-  get isNotEmpty(): boolean {
-    return !!this.items.length;
+  get isEmpty(): boolean {
+    return this.items.length === 0;
   }
 }
