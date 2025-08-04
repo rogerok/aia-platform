@@ -74,7 +74,7 @@ export class MeetingsListItemModel extends MeetingModel {
   duration: number;
 }
 
-export class MeetingsListModel extends ListModel<MeetingModel> {}
+export class MeetingsListModel extends ListModel<MeetingsListItemModel> {}
 
 export class MeetingCreateModel {
   @IsString()

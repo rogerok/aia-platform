@@ -26,7 +26,7 @@ export const Agents: FC<AgentsProps> = observer((props) => {
   return (
     <div className={'bg-muted flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'}>
       <AgentsHeader />
-      {store.data.isNotEmpty ? (
+      {store.data.hasItems ? (
         <>
           <DataTable columns={agentsColumns} data={store.data.items} />
           {store.searchParamsHandler && (

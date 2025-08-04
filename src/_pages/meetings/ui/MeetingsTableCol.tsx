@@ -1,22 +1,25 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import humanizeDuration from 'humanize-duration';
 import {
   CircleCheckIcon,
   CircleXIcon,
   ClockArrowUpIcon,
-  ClockFadingIcon,
   CornerDownRightIcon,
   LoaderIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
+import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAvatar';
+import { Badge } from '@/components/ui/badge';
 import { routes } from '@/lib/constants/routes';
 import {
   MeetingsListItemModel,
   MeetingStatusType,
 } from '@/lib/models/meetings/meetings';
+import { cn } from '@/lib/utils';
 
 const formatDuration = (ms: number) => {
   return humanizeDuration(ms * 1000, {
@@ -30,7 +33,7 @@ const statusIconMap: Record<MeetingStatusType, ReactNode> = {
   active: <LoaderIcon />,
   canceled: <CircleXIcon />,
   completed: <CircleCheckIcon />,
-  processing: <LoaderIcon />,
+  processing: <LoaderIcon className={'animate-spin'} />,
   upcoming: <ClockArrowUpIcon />,
 };
 
@@ -42,31 +45,72 @@ const statusColorMap: Record<MeetingStatusType, string> = {
   upcoming: 'bg-yellow-500/200 text-yellow-800 border-yellow-800/5',
 };
 
-export const meetingsColumns: ColumnDef<MeetingsListItemModel>[] = [
+export const MeetingsTableCol: ColumnDef<MeetingsListItemModel>[] = [
   {
     accessorKey: 'name',
     cell: ({ row }) => (
       <Link href={routes.agent(row.original.id)}>
         <div className={'flex flex-col gap-y-1'}>
+          <span className={'font-semibold capitalize'}>
+            {row.original.name}
+          </span>
+
           <div className={'flex items-center gap-x-2'}>
-            <span className={'font-semibold capitalize'}>
-              {row.original.name}
-            </span>
-          </div>
-          <div className={'flex items-center gap-x-2'}>
-            <CornerDownRightIcon className={'text-muted-foreground size-3'} />
-            <span className={'max-w-[200px] truncate capitalize'}>
-              {/*{row.original.instructions}*/}
-            </span>
+            <div className={'gap flex items-center gap-x-1'}>
+              <CornerDownRightIcon className={'text-muted-foreground size-3'} />
+              <span className={'max-w-[200px] truncate capitalize'}>
+                {row.original.agent.name}
+              </span>
+            </div>
+            <GeneratedAvatar
+              className={'size-4'}
+              firstName={row.original.agent.name}
+            />
+            {!!row.original.startedAt && (
+              <span className={'text-muted-foreground text-sm'}>
+                {format(row.original.startedAt, 'MMM d')}
+              </span>
+            )}
           </div>
         </div>
       </Link>
     ),
     header: 'Meeting Name',
   },
-  // {
-  //   accessorKey: 'meetingCount',
-  //   cell: ({ row }) => <MeetingsCounter amount={5} />,
-  //   header: 'Meetings',
-  // },
+  {
+    accessorKey: 'status',
+    cell: ({ row }) => {
+      const icon = statusIconMap[row.original.status];
+
+      return (
+        <Badge
+          className={cn(
+            'text-muted-foreground capitalize [&>svg]:size-4',
+            statusColorMap[row.original.status],
+          )}
+          variant={'outline'}
+        >
+          {icon}
+          {row.original.status}
+        </Badge>
+      );
+    },
+    header: 'Status',
+  },
+  {
+    accessorKey: 'duration',
+    cell: ({ row }) => {
+      return (
+        <Badge
+          className={'flex items-center capitalize [&>svg]:size-4'}
+          variant={'outline'}
+        >
+          {row.original.duration
+            ? formatDuration(row.original.duration)
+            : 'No duration'}
+        </Badge>
+      );
+    },
+    header: 'Duration',
+  },
 ];
