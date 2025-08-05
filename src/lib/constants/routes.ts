@@ -2,6 +2,7 @@ export const routes = {
   agent: (id: string) => `/agents/${id}`,
   agents: () => '/agents',
   home: () => '/',
+  meeting: (id: string) => `/meetings/${id}`,
   meetings: () => '/meetings',
   signIn: () => '/sign-in',
   signUp: () => '/sign-up',

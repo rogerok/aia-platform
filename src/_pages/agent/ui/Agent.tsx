@@ -8,8 +8,8 @@ import { useAgentStoreHydration } from '@/_pages/agent/store/agentStore';
 import { AgentActionsDropdown } from '@/_pages/agent/ui/AgentActionsDropdown';
 import { AgentBreadcrumbs } from '@/_pages/agent/ui/AgentBreadcrumbs';
 import { AgentContent } from '@/_pages/agent/ui/AgentContent';
-import { AgentDeleteDialog } from '@/_pages/agent/ui/AgentDeleteDialog';
 import { AgentEditForm } from '@/_pages/agent/ui/AgentEditForm';
+import { ConfirmationDialog } from '@/components/custom/ConfirmationDialog/ConfirmationDialog';
 import { AgentModel } from '@/lib/models/agents/agents';
 import { AgentGetOneRouterOutput } from '@/lib/models/agents/agentsOutput';
 
@@ -32,7 +32,13 @@ export const Agent: FC<AgentProps> = observer((props) => {
           </div>
           <AgentContent />
         </div>
-        <AgentDeleteDialog />
+        <ConfirmationDialog
+          cancelCb={store.deleteDialog.setFalse}
+          confirmCb={store.delete}
+          onOpenChange={store.deleteDialog.setValue}
+          open={store.deleteDialog.value}
+          title={`Do you want to delete ${store.agent.name} agent?`}
+        />
         <AgentEditForm />
       </>
     )

@@ -10,7 +10,7 @@ import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAv
 import { Badge } from '@/components/ui/badge';
 import { routes } from '@/lib/constants/routes';
 import {
-  MeetingsListItemModel,
+  MeetingModel,
   MeetingStatusType,
 } from '@/lib/models/meetings/meetings';
 import { cn } from '@/lib/utils';
@@ -31,11 +31,11 @@ const statusColorMap: Record<MeetingStatusType, string> = {
   upcoming: 'bg-yellow-500/200 text-yellow-800 border-yellow-800/5',
 };
 
-export const MeetingsTableCol: ColumnDef<MeetingsListItemModel>[] = [
+export const MeetingsTableCol: ColumnDef<MeetingModel>[] = [
   {
     accessorKey: 'name',
     cell: ({ row }) => (
-      <Link href={routes.agent(row.original.id)}>
+      <Link href={routes.meeting(row.original.id)}>
         <div className={'flex flex-col gap-y-1'}>
           <span className={'font-semibold capitalize'}>
             {row.original.name}

@@ -1,7 +1,7 @@
 'use client';
 
 import { observer } from 'mobx-react-lite';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAvatar';
 import { CommandSelect } from '@/components/form/fields/Select/CommandSelect';
@@ -9,6 +9,12 @@ import { AgentSelectStore } from '@/components/form/selects/agentSelectStore';
 
 export const AgentSelect: FC = observer(() => {
   const [store] = useState(() => new AgentSelectStore());
+
+  useEffect(() => {
+    if (!store.agents.items) {
+      void store.getAgents();
+    }
+  }, [store]);
 
   return (
     <CommandSelect

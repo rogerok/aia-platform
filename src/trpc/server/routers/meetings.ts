@@ -5,6 +5,7 @@ import { db } from '@/db';
 import { agents, meetings } from '@/db/schemas/schema';
 import {
   MeetingCreateModel,
+  MeetingDeleteModel,
   MeetingEditModel,
   MeetingGetModel,
   MeetingsQueryModel,
@@ -27,6 +28,25 @@ export const meetingsRouter = createTRPCRouter({
         .returning();
 
       return createdMeeting;
+    }),
+  delete: protectedProcedure
+    .input((input) => processInput(MeetingDeleteModel, input))
+    .mutation(async ({ ctx, input }) => {
+      const [updatedMeeting] = await db
+        .delete(meetings)
+        .where(
+          and(eq(meetings.id, input.id), eq(meetings.userId, ctx.auth.user.id)),
+        )
+        .returning();
+
+      if (!updatedMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      return updatedMeeting;
     }),
   getMany: protectedProcedure
     .input((input) => processInput(MeetingsQueryModel, input))
@@ -76,12 +96,20 @@ export const meetingsRouter = createTRPCRouter({
         totalPages: totalPages,
       };
     }),
+
   getOne: protectedProcedure
     .input((input) => processInput(MeetingGetModel, input))
     .query(async ({ ctx, input }) => {
       const [meeting] = await db
-        .select()
+        .select({
+          ...getTableColumns(meetings),
+          agent: agents,
+          duration: sql<number>`EXTRACT(EPOCH FROM(ended_at - started_at))`.as(
+            'duration',
+          ),
+        })
         .from(meetings)
+        .innerJoin(agents, eq(meetings.agentId, agents.id))
         .where(
           and(eq(meetings.id, input.id), eq(meetings.userId, ctx.auth.user.id)),
         );
@@ -98,22 +126,37 @@ export const meetingsRouter = createTRPCRouter({
     .input((input) => processInput(MeetingEditModel, input))
     .mutation(async ({ ctx, input }) => {
       const { agentId, id, name } = input;
-      const [updatedMeeting] = await db
-        .update(meetings)
-        .set({
-          agentId: agentId,
-          name: name,
-        })
-        .where(and(eq(meetings.id, id), eq(meetings.userId, ctx.auth.user.id)))
-        .returning();
 
-      if (!updatedMeeting) {
+      const [updated] = await db
+        .update(meetings)
+        .set({ agentId, name })
+        .where(and(eq(meetings.id, id), eq(meetings.userId, ctx.auth.user.id)))
+        .returning({ id: meetings.id });
+
+      if (!updated) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Meeting not found',
         });
       }
 
-      return updatedMeeting;
+      const [meeting] = await db
+        .select({
+          ...getTableColumns(meetings),
+          agent: agents,
+          duration: sql<number>`EXTRACT(EPOCH FROM(ended_at - started_at))`.as(
+            'duration',
+          ),
+        })
+        .from(meetings)
+        .innerJoin(agents, eq(meetings.agentId, agents.id))
+        .where(
+          and(
+            eq(meetings.id, updated.id),
+            eq(meetings.userId, ctx.auth.user.id),
+          ),
+        );
+
+      return meeting;
     }),
 });
