@@ -14,19 +14,25 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { FormLabel, FormMessage } from '@/components/ui/form';
+import { FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useFormContext } from '@/lib/form/formContext';
 import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { cn } from '@/lib/utils';
 
+export interface CommandSelectOptionType {
+  children: ReactNode;
+  id: string;
+  value: string;
+}
+
 interface CommandSelectProps {
   name: string;
   options: { children: ReactNode; id: string; value: string }[];
-  value: string;
   className?: string;
   label?: string;
   loading?: boolean;
   placeholder?: string;
+  onOpenChange?: (isOpen: boolean) => Promise<void>;
   onSearch?: (value: string) => void;
 }
 
@@ -36,17 +42,19 @@ export const CommandSelect: FC<CommandSelectProps> = observer((props) => {
     label,
     loading,
     name,
+    onOpenChange,
     onSearch,
     options,
     placeholder = 'Select an option',
-    value,
   } = props;
 
   const [open] = useState(() => new BooleanToggleStore(false));
 
-  const { control } = useFormContext();
+  const { control, values } = useFormContext();
 
-  const selectedOption = options.find((option) => option.value === value);
+  const selectedOption = options.find(
+    (option) => option.value === values[name],
+  );
   return (
     <>
       {label && <FormLabel>{label}</FormLabel>}
@@ -57,7 +65,10 @@ export const CommandSelect: FC<CommandSelectProps> = observer((props) => {
           !selectedOption && 'text-muted-foreground',
           className,
         )}
-        onClick={open.toggle}
+        onClick={() => {
+          open.toggle();
+          onOpenChange?.(open.value);
+        }}
         type={'button'}
         variant={'outline'}
       >
@@ -70,9 +81,12 @@ export const CommandSelect: FC<CommandSelectProps> = observer((props) => {
         control={control}
         name={name}
         render={({ field, fieldState }) => (
-          <>
+          <FormItem>
             <CommandDialog
-              onOpenChange={open.setValue}
+              onOpenChange={(isOpen) => {
+                open.setValue(isOpen);
+                onOpenChange?.(isOpen);
+              }}
               open={open.value}
               shouldFilter={!onSearch}
             >
@@ -107,7 +121,7 @@ export const CommandSelect: FC<CommandSelectProps> = observer((props) => {
               </CommandList>
             </CommandDialog>
             <FormMessage error={fieldState.error?.message} />
-          </>
+          </FormItem>
         )}
       />
     </>

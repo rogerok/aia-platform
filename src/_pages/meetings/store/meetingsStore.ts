@@ -7,7 +7,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { errorHandle } from '@/lib/decorators/errorHandle';
 import { successNotify } from '@/lib/decorators/successNotify';
 import { MobxForm } from '@/lib/form/mobxForm';
-import { AgentModel, AgentsListModel } from '@/lib/models/agents/agents';
+import { AgentsListModel } from '@/lib/models/agents/agents';
 import {
   MeetingCreateModel,
   MeetingsListItemModel,
@@ -19,11 +19,13 @@ import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { RequestStore } from '@/lib/stores/requestStore';
 import { useRootStore } from '@/lib/stores/rootStore';
 import { RouterStore } from '@/lib/stores/routerStore';
-import { debounce } from '@/lib/utils/debounce';
+import { SearchParamsHandler } from '@/lib/utils/searchParamsHandler';
 import { trpcClient } from '@/trpc/client/trpcClient';
 
 class MeetingsStore {
   agents: AgentsListModel = new AgentsListModel();
+
+  createMeetingRequest = new RequestStore(trpcClient.meetings.create.mutate);
 
   dialog = new BooleanToggleStore(false);
 
@@ -33,18 +35,18 @@ class MeetingsStore {
     resolver: classValidatorResolver(MeetingCreateModel),
   });
 
-  getAgentsDebounced = debounce(() => {
-    void this.getAgents();
-  }, 300);
-
-  getAgentsRequest = new RequestStore(trpcClient.agents.getMany.query);
   getMeetingsRequest = new RequestStore(trpcClient.meetings.getMany.query);
 
   meetings: MeetingsListModel = new MeetingsListModel();
+
   router: RouterStore;
   searchAgentsTerm: string = '';
 
-  submitRequest = new RequestStore(trpcClient.meetings.create.mutate);
+  searchForm = new MobxForm<MeetingsQueryModel>({
+    defaultValues: new MeetingsQueryModel(),
+    onSubmit: (data) => this.submitFilterForm(data),
+  });
+  searchParamsHandler: SearchParamsHandler<MeetingsQueryModel> | null = null;
 
   constructor(router: RouterStore) {
     makeAutoObservable(
@@ -64,30 +66,6 @@ class MeetingsStore {
   }
 
   @errorHandle()
-  async getAgents() {
-    console.log(this.searchAgentsTerm);
-
-    const resp = await this.getAgentsRequest.execute({
-      page: 1,
-      pageSize: 100,
-      search: this.searchAgentsTerm,
-    });
-
-    if (resp.status === 'success') {
-      runInAction(
-        () =>
-          (this.agents = new AgentsListModel({
-            items: resp.data.items.map((agent) =>
-              plainToInstance(AgentModel, agent),
-            ),
-            total: resp.data.total,
-            totalPages: resp.data.totalPages,
-          })),
-      );
-    }
-  }
-
-  @errorHandle()
   async getMeetings(params: MeetingsQueryModel) {
     const resp = await this.getMeetingsRequest.execute(params);
 
@@ -104,19 +82,33 @@ class MeetingsStore {
     }
   }
 
-  hydrate(data: MeetingsListModel) {
-    this.meetings = data;
+  async handlePaginationChange(page: number) {
+    if (this.searchParamsHandler) {
+      this.searchParamsHandler.setQueryParams({
+        ...this.searchParamsHandler.params,
+        page,
+      });
+    }
   }
 
-  async searchAgents(search: string) {
-    this.searchAgentsTerm = search;
-    this.getAgentsDebounced();
+  hydrate(data: MeetingsListModel) {
+    this.meetings = data;
+    this.searchParamsHandler = new SearchParamsHandler(MeetingsQueryModel);
+  }
+
+  async submitFilterForm(data: MeetingsQueryModel) {
+    this.searchParamsHandler?.setQueryParams({
+      ...new MeetingsQueryModel(),
+      agentId: data.agentId,
+      search: data.search,
+      status: data.status,
+    });
   }
 
   @errorHandle()
   @successNotify('Meeting was created')
   async submitMeeting(data: MeetingCreateModel): Promise<void> {
-    const resp = await this.submitRequest.execute(data);
+    const resp = await this.createMeetingRequest.execute(data);
     // TODO: check if error and if error code is FORBIDDEN then redirect to '/upgrade'
 
     if (resp.status === 'success') {
@@ -124,12 +116,10 @@ class MeetingsStore {
         this.closeFormDialog();
       });
 
+      this.searchParamsHandler?.setQueryParams(new MeetingsQueryModel(), false);
+
       await this.getMeetings(new MeetingsQueryModel());
     }
-  }
-
-  get isAgentsLoading(): boolean {
-    return this.getAgentsRequest.isLoading;
   }
 }
 

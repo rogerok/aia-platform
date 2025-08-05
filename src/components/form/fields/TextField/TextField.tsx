@@ -37,9 +37,12 @@ export const TextField: FC<TextFieldProps> = observer((props) => {
       name={name}
       render={({ field, fieldState }) => (
         <FormItem>
-          <FormLabel error={fieldState.error?.message} id={id}>
-            {props.label}
-          </FormLabel>
+          {props.label && (
+            <FormLabel error={fieldState.error?.message} id={id}>
+              {props.label}
+            </FormLabel>
+          )}
+
           <Input
             {...rest}
             {...field}

@@ -2,16 +2,10 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import humanizeDuration from 'humanize-duration';
-import {
-  CircleCheckIcon,
-  CircleXIcon,
-  ClockArrowUpIcon,
-  CornerDownRightIcon,
-  LoaderIcon,
-} from 'lucide-react';
+import { CornerDownRightIcon } from 'lucide-react';
 import Link from 'next/link';
-import { ReactNode } from 'react';
 
+import { statusIconMap } from '@/_pages/meetings/lib/constants';
 import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAvatar';
 import { Badge } from '@/components/ui/badge';
 import { routes } from '@/lib/constants/routes';
@@ -27,14 +21,6 @@ const formatDuration = (ms: number) => {
     round: true,
     units: ['h', 'm', 's'],
   });
-};
-
-const statusIconMap: Record<MeetingStatusType, ReactNode> = {
-  active: <LoaderIcon />,
-  canceled: <CircleXIcon />,
-  completed: <CircleCheckIcon />,
-  processing: <LoaderIcon className={'animate-spin'} />,
-  upcoming: <ClockArrowUpIcon />,
 };
 
 const statusColorMap: Record<MeetingStatusType, string> = {
