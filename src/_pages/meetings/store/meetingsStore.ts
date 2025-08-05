@@ -10,7 +10,7 @@ import { MobxForm } from '@/lib/form/mobxForm';
 import { AgentsListModel } from '@/lib/models/agents/agents';
 import {
   MeetingCreateModel,
-  MeetingsListItemModel,
+  MeetingModel,
   MeetingsListModel,
   MeetingsQueryModel,
 } from '@/lib/models/meetings/meetings';
@@ -73,7 +73,7 @@ class MeetingsStore {
       runInAction(() => {
         this.meetings = new MeetingsListModel({
           items: resp.data.items.map((meeting) =>
-            plainToInstance(MeetingsListItemModel, meeting),
+            plainToInstance(MeetingModel, meeting),
           ),
           total: resp.data.total,
           totalPages: resp.data.totalPages,

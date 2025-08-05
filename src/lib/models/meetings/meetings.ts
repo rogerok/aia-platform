@@ -54,11 +54,17 @@ export class MeetingsQueryModel extends BaseQueryParamsModel {
 }
 
 export class MeetingModel {
+  @ValidateNested()
+  agent: AgentModel;
+
   @IsString()
   agentId: string;
 
   @IsString()
   createdAt: string;
+
+  @IsNumber()
+  duration: number;
 
   @ValidateIf((_, value) => value !== null)
   @IsString()
@@ -70,20 +76,23 @@ export class MeetingModel {
   @IsString()
   name: string;
 
-  @IsString()
-  recordingUrl: string;
+  @ValidateIf((_, value) => value !== null)
+  recordingUrl: string | null;
 
+  @ValidateIf((_, value) => value !== null)
   @IsString()
-  startedAt: string;
+  startedAt: string | null;
 
   @IsIn(meetingStatusList)
   status: MeetingStatusType;
 
+  @ValidateIf((_, value) => value !== null)
   @IsString()
-  summary: string;
+  summary: string | null;
 
+  @ValidateIf((_, value) => value !== null)
   @IsString()
-  transcriptUrl: string;
+  transcriptUrl: string | null;
 
   @IsString()
   updatedAt: string;
@@ -91,15 +100,8 @@ export class MeetingModel {
   @IsString()
   userId: string;
 }
-export class MeetingsListItemModel extends MeetingModel {
-  @ValidateNested()
-  agent: AgentModel;
 
-  @IsNumber()
-  duration: number;
-}
-
-export class MeetingsListModel extends ListModel<MeetingsListItemModel> {}
+export class MeetingsListModel extends ListModel<MeetingModel> {}
 
 export class MeetingCreateModel {
   @IsString()
@@ -108,6 +110,11 @@ export class MeetingCreateModel {
   @IsString()
   @Length(2, 256)
   name: string = '';
+}
+
+export class MeetingDeleteModel {
+  @IsString()
+  id: string;
 }
 
 export class MeetingEditModel {
