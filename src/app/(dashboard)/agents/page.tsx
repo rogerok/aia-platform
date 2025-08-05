@@ -35,13 +35,13 @@ const Page = async ({ searchParams }: PageProps) => {
   });
 
   return (
-    <ErrorBoundary fallback={<ShowError title={'Agents loading error'} />}>
-      <Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loader />}>
+      <ErrorBoundary fallback={<ShowError title={'Agents loading error'} />}>
         <AgentsStoreProvider>
           <AgentsData searchParams={filters} />
         </AgentsStoreProvider>
-      </Suspense>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </Suspense>
   );
 };
 

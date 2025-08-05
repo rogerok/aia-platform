@@ -8,6 +8,7 @@ import { useMeetingsStoreHydration } from '@/_pages/meetings/store/meetingsStore
 import { MeetingsHeader } from '@/_pages/meetings/ui/MeetingsHeader';
 import { MeetingsTableCol } from '@/_pages/meetings/ui/MeetingsTableCol';
 import { EmptyListIndicator } from '@/components/custom/EmptyListIndicator/EmptyListIndicator';
+import { DataPagination } from '@/components/table/DataPagination';
 import { DataTable } from '@/components/table/DataTable';
 import { MeetingsListModel } from '@/lib/models/meetings/meetings';
 import { MeetingsGetManyRouterOutput } from '@/lib/models/meetings/meetingsOutput';
@@ -25,7 +26,16 @@ export const Meetings: FC<MeetingsProps> = observer((props) => {
     <div className={'bg-muted flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'}>
       <MeetingsHeader />
       {store.meetings.hasItems ? (
-        <DataTable columns={MeetingsTableCol} data={store.meetings.items} />
+        <>
+          <DataTable columns={MeetingsTableCol} data={store.meetings.items} />
+          {store.searchParamsHandler && (
+            <DataPagination
+              onPageChange={store.handlePaginationChange}
+              page={store.searchParamsHandler.getParam('page')}
+              totalPages={store.meetings.totalPages}
+            />
+          )}
+        </>
       ) : (
         <EmptyListIndicator title={'There is no meetings'} />
       )}

@@ -5,7 +5,9 @@ import { FC } from 'react';
 
 import { useMeetingsStore } from '@/_pages/meetings/store/meetingsStore';
 import { MeetingsDialog } from '@/_pages/meetings/ui/MeetingsDialog';
+import { MeetingsSearchFilter } from '@/_pages/meetings/ui/search/MeetingsSearchFilter';
 import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 interface MeetingsHeaderProps {
@@ -22,12 +24,15 @@ export const MeetingsHeader: FC<MeetingsHeaderProps> = observer((props) => {
         props.className,
       )}
     >
-      <div className={'flex w-full items-center justify-between'}>
-        <h5 className={'text-xl' + ' font-medium'}>My meetings</h5>
-        <Button onClick={dialog.setTrue}>New meeting</Button>
-      </div>
-      {/*<MeetingsSearchFilter />*/}
-      <MeetingsDialog />
+      <ScrollArea>
+        <div className={'flex w-full items-center justify-between'}>
+          <h5 className={'text-xl font-medium'}>My meetings</h5>
+          <Button onClick={dialog.setTrue}>New meeting</Button>
+        </div>
+        <MeetingsSearchFilter />
+        <MeetingsDialog />
+        <ScrollBar orientation={'horizontal'} />
+      </ScrollArea>
     </div>
   );
 });

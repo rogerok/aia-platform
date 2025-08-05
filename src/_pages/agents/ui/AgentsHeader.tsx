@@ -7,6 +7,7 @@ import { useAgentsStore } from '@/_pages/agents/store/agentsStore';
 import { AgentsDialog } from '@/_pages/agents/ui/AgentsDialog';
 import { AgentsSearchFilter } from '@/_pages/agents/ui/AgentsSearchFilter';
 import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 interface AgentsHeaderProps {
@@ -23,12 +24,15 @@ export const AgentsHeader: FC<AgentsHeaderProps> = observer((props) => {
         props.className,
       )}
     >
-      <div className={'flex w-full items-center justify-between'}>
-        <h5 className={'text-xl' + ' font-medium'}>My agents</h5>
-        <Button onClick={dialog.setTrue}>New agent</Button>
-      </div>
-      <AgentsSearchFilter />
-      <AgentsDialog />
+      <ScrollArea>
+        <div className={'flex w-full items-center justify-between'}>
+          <h5 className={'text-xl' + ' font-medium'}>My agents</h5>
+          <Button onClick={dialog.setTrue}>New agent</Button>
+        </div>
+        <AgentsSearchFilter />
+        <AgentsDialog />
+        <ScrollBar orientation={'horizontal'} />
+      </ScrollArea>
     </div>
   );
 });

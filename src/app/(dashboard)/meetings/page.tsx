@@ -1,3 +1,4 @@
+import { plainToInstance } from 'class-transformer';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -6,15 +7,33 @@ import { Meetings } from '@/_pages/meetings/ui/Meetings';
 import { ShowError } from '@/components/custom/Error/ShowError';
 import { Loader } from '@/components/custom/Loader/Loader';
 import { handleIsNotAuth } from '@/lib/authActions';
+import { MeetingsQueryModel } from '@/lib/models/meetings/meetings';
 import { trpcServerClient } from '@/trpc/client/trpcServerClient';
 
-const Page = async () => {
-  await handleIsNotAuth();
+interface MeetingsDataProps {
+  searchParams: MeetingsQueryModel;
+}
 
-  const data = await trpcServerClient.meetings.getMany.query({
-    page: 1,
-    pageSize: 10,
-    search: '',
+const MeetingsData = async (props: MeetingsDataProps) => {
+  const { searchParams } = props;
+
+  const data = await trpcServerClient.meetings.getMany.query(searchParams);
+
+  return <Meetings data={data} />;
+};
+
+interface PageProps {
+  searchParams: Promise<MeetingsQueryModel>;
+}
+
+const Page = async ({ searchParams }: PageProps) => {
+  await handleIsNotAuth();
+  const params = await searchParams;
+
+  const filters = plainToInstance(MeetingsQueryModel, params, {
+    enableImplicitConversion: true,
+    excludeExtraneousValues: true,
+    exposeDefaultValues: true,
   });
 
   return (
@@ -23,7 +42,7 @@ const Page = async () => {
         fallback={<ShowError title={'Meetings list loading error'} />}
       >
         <MeetingsStoreProvider>
-          <Meetings data={data} />
+          <MeetingsData searchParams={filters} />
         </MeetingsStoreProvider>
       </ErrorBoundary>
     </Suspense>

@@ -2,6 +2,7 @@ import { Expose } from 'class-transformer';
 import {
   IsIn,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   MaxLength,
@@ -16,6 +17,17 @@ import { BaseQueryParamsModel } from '@/lib/models/paramsModel';
 
 export type MeetingStatusType = (typeof meetingStatusList)[number];
 
+export const MeetingStatusConstant: Record<
+  MeetingStatusType,
+  MeetingStatusType
+> = {
+  active: 'active',
+  canceled: 'canceled',
+  completed: 'completed',
+  processing: 'processing',
+  upcoming: 'upcoming',
+};
+
 export class MeetingGetModel {
   @IsString()
   id: string;
@@ -23,9 +35,22 @@ export class MeetingGetModel {
 
 export class MeetingsQueryModel extends BaseQueryParamsModel {
   @Expose()
+  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
+  @IsString()
+  agentId: string | null = null;
+
+  @Expose()
+  @IsOptional()
   @IsString()
   @MaxLength(256)
   search: string = '';
+
+  @Expose()
+  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
+  @IsIn(meetingStatusList)
+  status: MeetingStatusType | null = null;
 }
 
 export class MeetingModel {
@@ -37,7 +62,7 @@ export class MeetingModel {
 
   @ValidateIf((_, value) => value !== null)
   @IsString()
-  endedAt: string;
+  endedAt: string | null;
 
   @IsString()
   id: string;

@@ -31,7 +31,7 @@ export const meetingsRouter = createTRPCRouter({
   getMany: protectedProcedure
     .input((input) => processInput(MeetingsQueryModel, input))
     .query(async ({ ctx, input }) => {
-      const { page, pageSize, search } = input;
+      const { agentId, page, pageSize, search, status } = input;
 
       const data = await db
         .select({
@@ -47,6 +47,8 @@ export const meetingsRouter = createTRPCRouter({
           and(
             eq(meetings.userId, ctx.auth.user.id),
             search ? ilike(meetings.name, `%${search}%`) : undefined,
+            status ? eq(meetings.status, status) : undefined,
+            agentId ? eq(meetings.agentId, agentId) : undefined,
           ),
         )
         .orderBy(desc(meetings.createdAt), desc(meetings.id))
@@ -61,6 +63,8 @@ export const meetingsRouter = createTRPCRouter({
           and(
             eq(meetings.userId, ctx.auth.user.id),
             search ? ilike(meetings.name, `%${search}%`) : undefined,
+            status ? eq(meetings.status, status) : undefined,
+            agentId ? eq(meetings.agentId, agentId) : undefined,
           ),
         );
 
