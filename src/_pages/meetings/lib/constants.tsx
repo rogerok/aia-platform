@@ -10,7 +10,7 @@ import { MeetingStatusType } from '@/lib/models/meetings/meetings';
 
 export const statusIconMap: Record<MeetingStatusType, ReactNode> = {
   active: <LoaderIcon />,
-  canceled: <CircleXIcon />,
+  cancelled: <CircleXIcon />,
   completed: <CircleCheckIcon />,
   processing: <LoaderIcon />,
   upcoming: <ClockArrowUpIcon />,

@@ -1,6 +1,7 @@
 export const routes = {
   agent: (id: string) => `/agents/${id}`,
   agents: () => '/agents',
+  call: (id: string) => `/call/${id}`,
   home: () => '/',
   meeting: (id: string) => `/meetings/${id}`,
   meetings: () => '/meetings',
