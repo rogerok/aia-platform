@@ -22,7 +22,7 @@ export const MeetingStatusConstant: Record<
   MeetingStatusType
 > = {
   active: 'active',
-  canceled: 'canceled',
+  cancelled: 'cancelled',
   completed: 'completed',
   processing: 'processing',
   upcoming: 'upcoming',
@@ -99,6 +99,26 @@ export class MeetingModel {
 
   @IsString()
   userId: string;
+
+  get isActive(): boolean {
+    return this.status === MeetingStatusConstant.active;
+  }
+
+  get isCanceled(): boolean {
+    return this.status === MeetingStatusConstant.cancelled;
+  }
+
+  get isCompleted(): boolean {
+    return this.status === MeetingStatusConstant.completed;
+  }
+
+  get isProcessing(): boolean {
+    return this.status === MeetingStatusConstant.processing;
+  }
+
+  get isUpcoming(): boolean {
+    return this.status === MeetingStatusConstant.upcoming;
+  }
 }
 
 export class MeetingsListModel extends ListModel<MeetingModel> {}

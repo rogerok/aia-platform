@@ -1,5 +1,6 @@
 'use client';
 
+import { plainToInstance } from 'class-transformer';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { routes } from '@/lib/constants/routes';
@@ -87,7 +88,7 @@ class MeetingStore {
 
     if (resp.status === 'success') {
       runInAction(() => {
-        this.meeting = resp.data;
+        this.meeting = plainToInstance(MeetingModel, resp.data);
       });
     }
   }

@@ -8,6 +8,7 @@ import { useMeetingStoreHydration } from '@/_pages/meeting/store/meetingStore';
 import { MeetingActionsDropdown } from '@/_pages/meeting/ui/MeetingActionsDropdown';
 import { MeetingBreadcrumbs } from '@/_pages/meeting/ui/MeetingBreadcrubms';
 import { MeetingEditForm } from '@/_pages/meeting/ui/MeetingEditForm';
+import { RenderStatus } from '@/_pages/meeting/ui/status/RenderStatus';
 import { ConfirmationDialog } from '@/components/custom/ConfirmationDialog/ConfirmationDialog';
 import { MeetingModel } from '@/lib/models/meetings/meetings';
 import { MeetingsGetOneRouterOutput } from '@/lib/models/meetings/meetingsOutput';
@@ -31,6 +32,7 @@ export const Meeting: FC<MeetingProps> = observer((props) => {
             <MeetingBreadcrumbs />
             <MeetingActionsDropdown />
           </div>
+          <RenderStatus />
           <ConfirmationDialog
             cancelCb={store.deleteDialog.setFalse}
             confirmCb={store.delete}
