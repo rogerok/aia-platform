@@ -25,7 +25,7 @@ export const MeetingsHeader: FC<MeetingsHeaderProps> = observer((props) => {
       )}
     >
       <ScrollArea>
-        <div className={'flex w-full items-center justify-between'}>
+        <div className={'mb-2 flex w-full items-center justify-between'}>
           <h5 className={'text-xl font-medium'}>My meetings</h5>
           <Button onClick={dialog.setTrue}>New meeting</Button>
         </div>

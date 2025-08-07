@@ -15,14 +15,14 @@ export const RenderStatus: FC = observer(() => {
     case MeetingStatusConstant.active:
       return <MeetingStatusActive />;
 
-    case MeetingStatusConstant.upcoming:
-      return <MeetingStatusUpcoming />;
-
     case MeetingStatusConstant.cancelled:
       return <MeetingStatusCancelled />;
 
     case MeetingStatusConstant.processing:
       return <MeetingStatusProcessing />;
+
+    case MeetingStatusConstant.upcoming:
+      return <MeetingStatusUpcoming />;
 
     default:
       return null;

@@ -10,6 +10,7 @@ import {
   MeetingGetModel,
   MeetingsQueryModel,
 } from '@/lib/models/meetings/meetings';
+import { streamVideoService } from '@/lib/streamVideo';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { processInput } from '@/trpc/server/validator';
 
@@ -27,8 +28,35 @@ export const meetingsRouter = createTRPCRouter({
         })
         .returning();
 
+      await streamVideoService.createCall(
+        ctx.auth.user.id,
+        createdMeeting.id,
+        createdMeeting.name,
+      );
+
+      const [existingAgent] = await db
+        .select()
+        .from(agents)
+        .where(eq(agents.id, createdMeeting.agentId));
+
+      if (!existingAgent) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Agent not found',
+        });
+      }
+
+      await streamVideoService.upsertUsers([
+        {
+          id: existingAgent.id,
+          name: existingAgent.name,
+          role: 'user',
+        },
+      ]);
+
       return createdMeeting;
     }),
+
   delete: protectedProcedure
     .input((input) => processInput(MeetingDeleteModel, input))
     .mutation(async ({ ctx, input }) => {
@@ -48,6 +76,21 @@ export const meetingsRouter = createTRPCRouter({
 
       return updatedMeeting;
     }),
+  generateToken: protectedProcedure.mutation(async ({ ctx }) => {
+    const resp = await streamVideoService.upsertUsers([
+      {
+        id: ctx.auth.user.id,
+        name: ctx.auth.user.name,
+        role: 'admin',
+      },
+    ]);
+
+    if (resp.metadata.responseCode === 200) {
+      return streamVideoService.generateToken(ctx.auth.user.id);
+    } else {
+      return null;
+    }
+  }),
   getMany: protectedProcedure
     .input((input) => processInput(MeetingsQueryModel, input))
     .query(async ({ ctx, input }) => {
