@@ -91,4 +91,8 @@ export class AuthStore {
       }
     });
   }
+
+  useSession() {
+    return this.authService.useSession();
+  }
 }

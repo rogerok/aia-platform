@@ -25,7 +25,7 @@ export const Loader: FC<LoaderProps> = (props) => {
         }
       >
         <Loader2Icon className={'text-primary size-6 animate-spin'} />
-        <div className={'flex flex-col gap-y-2 text-center'}>
+        <div className={'text-foreground flex flex-col gap-y-2 text-center'}>
           <h6 className={'text-lg font-medium'}>{title}</h6>
           <p className={'text-sm'}>{description}</p>
         </div>
