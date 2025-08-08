@@ -60,3 +60,5 @@ export type AuthProvidersType = Extract<
   AuthAllProvidersType,
   'github' | 'google'
 >;
+
+export type AuthSessionType = ReturnType<AuthClientType['useSession']>['data'];

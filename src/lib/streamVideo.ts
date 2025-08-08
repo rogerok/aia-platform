@@ -1,4 +1,5 @@
 import 'server-only';
+
 import type { UserRequest } from '@stream-io/node-sdk';
 
 import { StreamClient } from '@stream-io/node-sdk';

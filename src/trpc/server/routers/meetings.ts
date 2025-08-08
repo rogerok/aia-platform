@@ -77,7 +77,7 @@ export const meetingsRouter = createTRPCRouter({
       return updatedMeeting;
     }),
   generateToken: protectedProcedure.mutation(async ({ ctx }) => {
-    const resp = await streamVideoService.upsertUsers([
+    await streamVideoService.upsertUsers([
       {
         id: ctx.auth.user.id,
         name: ctx.auth.user.name,
@@ -85,11 +85,7 @@ export const meetingsRouter = createTRPCRouter({
       },
     ]);
 
-    if (resp.metadata.responseCode === 200) {
-      return streamVideoService.generateToken(ctx.auth.user.id);
-    } else {
-      return null;
-    }
+    return streamVideoService.generateToken(ctx.auth.user.id);
   }),
   getMany: protectedProcedure
     .input((input) => processInput(MeetingsQueryModel, input))
