@@ -19,10 +19,10 @@ export class StreamVideoService {
     this.streamClient = streamClient;
   }
 
-  async createCall(id: string, meetingId: string, meetingName: string) {
-    return await this.streamClient.video.call('default', id).create({
+  async createCall(userId: string, meetingId: string, meetingName: string) {
+    return await this.streamClient.video.call('default', meetingId).create({
       data: {
-        created_by_id: id,
+        created_by_id: userId,
         custom: {
           meetingId: meetingId,
           meetingName: meetingName,

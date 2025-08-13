@@ -1,19 +1,15 @@
 'use client';
 import {
-  CallingState,
-  Call as SDKCall,
   StreamCall,
   StreamVideo,
   StreamVideoClient,
 } from '@stream-io/video-react-sdk';
-import { LoaderIcon } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import '@stream-io/video-react-sdk/dist/css/styles.css';
 
 import { useCallStore } from '@/_pages/call/store/callStore';
-import { CallUi } from '@/_pages/call/ui/CallUi';
-import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAvatar';
+import { RenderCall } from '@/_pages/call/ui/RenderCall';
 import { Loader } from '@/components/custom/Loader/Loader';
 import { envs } from '@/lib/constants/envs';
 import { trpcClient } from '@/trpc/client/trpcClient';
@@ -57,7 +53,7 @@ export const CallConnect: FC<CallConnectProps> = observer((props) => {
     return () => {
       endCall();
     };
-  }, [endCall, makeCall]);
+  }, [endCall, makeCall, streamVideoClient]);
 
   if (!(call && streamVideoClient)) {
     return <Loader />;
@@ -66,7 +62,7 @@ export const CallConnect: FC<CallConnectProps> = observer((props) => {
   return (
     <StreamVideo client={streamVideoClient}>
       <StreamCall call={call}>
-        <CallUi />
+        <RenderCall />
       </StreamCall>
     </StreamVideo>
   );

@@ -28,12 +28,6 @@ export const meetingsRouter = createTRPCRouter({
         })
         .returning();
 
-      await streamVideoService.createCall(
-        ctx.auth.user.id,
-        createdMeeting.id,
-        createdMeeting.name,
-      );
-
       const [existingAgent] = await db
         .select()
         .from(agents)
@@ -45,6 +39,12 @@ export const meetingsRouter = createTRPCRouter({
           message: 'Agent not found',
         });
       }
+
+      await streamVideoService.createCall(
+        ctx.auth.user.id,
+        createdMeeting.id,
+        createdMeeting.name,
+      );
 
       await streamVideoService.upsertUsers([
         {
@@ -76,6 +76,7 @@ export const meetingsRouter = createTRPCRouter({
 
       return updatedMeeting;
     }),
+
   generateToken: protectedProcedure.mutation(async ({ ctx }) => {
     await streamVideoService.upsertUsers([
       {

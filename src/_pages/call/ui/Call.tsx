@@ -35,7 +35,7 @@ export const Call: FC<CallProps> = observer((props) => {
   }
 
   return (
-    <div className={'text-white'}>
+    <div className={'h-full text-white'}>
       <CallProvider />
     </div>
   );

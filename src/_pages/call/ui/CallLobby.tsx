@@ -3,7 +3,6 @@ import {
   StreamVideoParticipant,
   ToggleAudioPreviewButton,
   ToggleVideoPreviewButton,
-  useCallStateHooks,
   VideoPreview,
 } from '@stream-io/video-react-sdk';
 import { LogInIcon } from 'lucide-react';
@@ -19,7 +18,7 @@ import { useRootStore } from '@/lib/stores/rootStore';
 
 const AllowBrowserPermission: FC = () => {
   return (
-    <p className={'text-sm'}>
+    <p className={'text-sm text-red-500'}>
       Please grant your browser a permission to access your camera and
       microphone
     </p>
@@ -44,13 +43,12 @@ const DisabledVideoPreview: FC = observer(() => {
 });
 
 export const CallLobby: FC = observer(() => {
-  const { authStore } = useRootStore();
-  const { handleJoin } = useCallStore();
-  const { useCameraState, useMicrophoneState } = useCallStateHooks();
-  const { hasBrowserPermission: hasCameraPermission } = useCameraState();
-
-  const { hasBrowserPermission: hasMicrophonePermission } =
-    useMicrophoneState();
+  const {
+    handleJoin,
+    hasCameraPermission,
+    hasMicrophonePermission,
+    isJoiningToCall,
+  } = useCallStore();
 
   const hasPermission = hasMicrophonePermission && hasCameraPermission;
 
@@ -79,11 +77,11 @@ export const CallLobby: FC = observer(() => {
             <ToggleVideoPreviewButton />
             <ToggleAudioPreviewButton />
           </div>
-          <div className={'flex w-full justify-between gap-x-2'}>
-            <Button asChild variant={'ghost'}>
+          <div className={'flex w-full justify-between gap-x-2 pt-2'}>
+            <Button asChild variant={'secondary'}>
               <Link href={routes.meetings()}>Cancel</Link>
             </Button>
-            <Button onClick={handleJoin}>
+            <Button disabled={isJoiningToCall} onClick={handleJoin}>
               <LogInIcon />
               Join Call
             </Button>

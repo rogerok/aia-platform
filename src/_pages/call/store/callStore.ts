@@ -5,7 +5,7 @@ import {
   CallingState,
   StreamVideoClient,
 } from '@stream-io/video-react-sdk';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 
 import {
   CallShowConstant,
@@ -18,10 +18,15 @@ import { createStoreContext } from '@/lib/storeAdapter/storeAdapter';
 class CallStore {
   call: Call | null = null;
 
+  callingState: CallingState = CallingState.UNKNOWN;
+
   callShow: CallShowValuesType = CallShowConstant.lobby;
 
-  meeting: MeetingModel = new MeetingModel();
+  hasCameraPermission = false;
 
+  hasMicrophonePermission = false;
+
+  meeting: MeetingModel = new MeetingModel();
   streamVideoClient: StreamVideoClient | null;
 
   constructor() {
@@ -36,6 +41,10 @@ class CallStore {
 
   @errorHandle()
   endCall() {
+    if (!this.streamVideoClient) {
+      return;
+    }
+
     if (this.call && this.call.state.callingState !== CallingState.LEFT) {
       void this.call.leave();
       void this.call.endCall();
@@ -48,17 +57,19 @@ class CallStore {
     this.streamVideoClient = null;
   }
 
+  @errorHandle()
   async handleJoin() {
     if (this.call) {
-      await this.call.join();
       this.setCallShow(CallShowConstant.call);
+      await this.call.join();
     }
   }
 
-  handleLeave() {
+  @errorHandle()
+  async handleLeave() {
     if (this.call) {
-      this.call.leave();
       this.setCallShow(CallShowConstant.ended);
+      await this.call.leave();
     }
   }
 
@@ -73,33 +84,53 @@ class CallStore {
   @errorHandle()
   makeCall() {
     if (this.streamVideoClient) {
-      this.call = this.streamVideoClient.call('default', this.meeting.id);
-      void this.call.camera.disable();
-      void this.call.microphone.disable();
+      const call = this.streamVideoClient.call('default', this.meeting.id);
+      void call.camera.disable();
+      void call.microphone.disable();
+
+      runInAction(() => {
+        this.call = call;
+        this.subscribeCameraPermission();
+        this.subscribeMicrophonePermission();
+        this.subscribeCallState();
+      });
     }
+  }
+
+  setCallingState(state: CallingState) {
+    this.callingState = state;
   }
 
   setCallShow(show: CallShowValuesType) {
     this.callShow = show;
   }
 
-  get hasCameraPermission() {
-    let permission = false;
-    this.call?.camera.state.hasBrowserPermission$.subscribe(
-      (value) => (permission = value),
-    );
-
-    return permission;
+  setCameraPermission(permission: boolean) {
+    this.hasCameraPermission = permission;
   }
 
-  get hasMicrophonePermission() {
-    let permission = false;
+  setMicrophonePermission(permission: boolean) {
+    this.hasMicrophonePermission = permission;
+  }
 
-    this.call?.microphone.state.hasBrowserPermission$.subscribe(
-      (value) => (permission = value),
+  subscribeCallState() {
+    this.call?.state.callingState$.subscribe(this.setCallingState);
+  }
+
+  subscribeCameraPermission() {
+    this.call?.camera.state.hasBrowserPermission$.subscribe(
+      this.setCameraPermission,
     );
+  }
 
-    return permission;
+  subscribeMicrophonePermission() {
+    this.call?.microphone.state.hasBrowserPermission$.subscribe(
+      this.setMicrophonePermission,
+    );
+  }
+
+  get isJoiningToCall() {
+    return this.callingState === CallingState.JOINING;
   }
 }
 

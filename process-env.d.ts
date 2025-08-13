@@ -11,7 +11,7 @@ declare global {
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: string;
       NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: string;
       NEXT_PUBLIC_STREAM_VIDEO_API_KEY: string;
-      STREAM_VIDEO_SECRET_KEY: string;
+      NEXT_PUBLIC_STREAM_VIDEO_SECRET_KEY: string;
     }
   }
 }

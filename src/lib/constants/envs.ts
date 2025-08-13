@@ -7,5 +7,5 @@ export const envs = {
   googleClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
   streamVideoApiKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY,
-  streamVideoSecretKey: process.env.STREAM_VIDEO_SECRET_KEY,
+  streamVideoSecretKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_SECRET_KEY,
 } as const;
