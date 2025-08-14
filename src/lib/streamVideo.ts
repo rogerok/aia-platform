@@ -19,6 +19,14 @@ export class StreamVideoService {
     this.streamClient = streamClient;
   }
 
+  async connectOpenAi(agentId: string, meetingId: string) {
+    return await this.streamClient.video.connectOpenAi({
+      agentUserId: agentId,
+      call: this.makeCall(meetingId),
+      openAiApiKey: envs.openAiKey,
+    });
+  }
+
   async createCall(userId: string, meetingId: string, meetingName: string) {
     return await this.streamClient.video.call('default', meetingId).create({
       data: {
@@ -42,6 +50,10 @@ export class StreamVideoService {
     });
   }
 
+  async endCall(meetingId: string) {
+    await this.makeCall(meetingId).end();
+  }
+
   generateToken(userId: string) {
     const expirationTime = Math.floor(Date.now() / 1000) + 3600;
     const issuedAt = Math.floor(Date.now() / 1000) - 60;
@@ -53,9 +65,17 @@ export class StreamVideoService {
     });
   }
 
+  makeCall(meetingId: string) {
+    return this.streamClient.video.call('default', meetingId);
+  }
+
   @errorHandle('User was not created')
   async upsertUsers(users: UserRequest[]) {
     return await this.streamClient.upsertUsers(users);
+  }
+
+  verifyWebHook(body: string, signature: string) {
+    return this.streamClient.verifyWebhook(body, signature);
   }
 }
 

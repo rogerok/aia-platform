@@ -5,6 +5,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "next dev --turbopack",
+    "dev:webhook": "ngrok http --url=sharply-champion-labrador.ngrok-free.app 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -43,6 +44,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@stream-io/node-sdk": "^0.5.1",
+    "@stream-io/openai-realtime-api": "^0.3.3",
     "@stream-io/video-react-sdk": "^1.19.5",
     "@tanstack/react-table": "^8.21.3",
     "@trpc/client": "^11.4.3",
@@ -70,6 +72,7 @@
     "nanoid": "^5.1.5",
     "next": "15.3.3",
     "next-themes": "^0.4.6",
+    "openai": "^5.12.2",
     "react": "^19.0.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^19.0.0",

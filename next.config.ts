@@ -7,6 +7,10 @@ checkEnvs(envs);
 
 const nextConfig: NextConfig = {
   /* config options here */
+  allowedDevOrigins: [
+    envs.authTrustedOriginRemote,
+    envs.authTrustedOriginLocal,
+  ],
 };
 
 export default nextConfig;
