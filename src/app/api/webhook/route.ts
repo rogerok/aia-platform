@@ -1,14 +1,21 @@
 import {
+  CallEndedEvent,
+  CallRecordingReadyEvent,
   CallSessionParticipantLeftEvent,
   CallSessionStartedEvent,
+  CallTranscriptionReadyEvent,
 } from '@stream-io/node-sdk';
-import { and, eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { db } from '@/db';
-import { agents, meetings } from '@/db/schemas/schema';
-import { MeetingStatusConstant } from '@/lib/models/meetings/meetings';
+import {
+  handleCallEndedEvent,
+  handleCallRecordingReadyEvent,
+  handleCallSessionParticipantLeftEvent,
+  handleCallSessionStartedEvent,
+  handleCallTranscriptionReadyEvent,
+} from '@/app/api/webhook/handlers';
 import { streamVideoService } from '@/lib/streamVideo';
+import { create400Response, createErrorResponse } from '@/lib/utils/responses';
 
 function verifySignatureWithSDK(body: string, signature: string): boolean {
   return streamVideoService.verifyWebHook(body, signature);
@@ -19,23 +26,13 @@ export async function POST(req: NextRequest) {
   const apiKey = req.headers.get('x-api-key');
 
   if (!signature || !apiKey) {
-    return NextResponse.json(
-      {
-        error: 'Missing signature or API key',
-      },
-      { status: 400 },
-    );
+    return create400Response('Missing signature or API key');
   }
 
   const body = await req.text();
 
   if (!verifySignatureWithSDK(body, signature)) {
-    return NextResponse.json(
-      {
-        error: 'Invalid signature',
-      },
-      { status: 401 },
-    );
+    return createErrorResponse('Invalid signature', 401);
   }
 
   let payload: unknown;
@@ -43,79 +40,35 @@ export async function POST(req: NextRequest) {
   try {
     payload = JSON.parse(body) as Record<string, unknown>;
   } catch {
-    return NextResponse.json(
-      {
-        error: 'Invalid JSON',
-      },
-      { status: 400 },
-    );
+    return create400Response('Invalid JSON');
   }
 
   const eventType = (payload as Record<string, unknown>)?.type;
 
-  if (eventType === 'call.session_started') {
-    const event = payload as CallSessionStartedEvent;
-    const meetingId = event.call.custom?.meetingId;
+  switch (eventType) {
+    case 'call.session_started':
+      await handleCallSessionStartedEvent(payload as CallSessionStartedEvent);
+      break;
 
-    if (!meetingId) {
-      return NextResponse.json(
-        { error: 'Missing meeting id' },
-        { status: 400 },
+    case 'call.session_participant_left':
+      await handleCallSessionParticipantLeftEvent(
+        payload as CallSessionParticipantLeftEvent,
       );
-    }
+      break;
 
-    const [existingMeeting] = await db
-      .select()
-      .from(meetings)
-      .where(
-        and(
-          eq(meetings.id, meetingId),
-          eq(meetings.status, MeetingStatusConstant.upcoming),
-        ),
+    case 'call.session_ended':
+      await handleCallEndedEvent(payload as CallEndedEvent);
+      break;
+
+    case 'call.transcription_ready':
+      await handleCallTranscriptionReadyEvent(
+        payload as CallTranscriptionReadyEvent,
       );
+      break;
 
-    if (!existingMeeting) {
-      return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
-    }
-
-    await db
-      .update(meetings)
-      .set({
-        startedAt: new Date(),
-        status: MeetingStatusConstant.active,
-      })
-      .where(eq(meetings.id, meetingId));
-
-    const [existingAgent] = await db
-      .select()
-      .from(agents)
-      .where(eq(agents.id, existingMeeting.agentId));
-
-    if (!existingAgent) {
-      return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
-    }
-
-    const realtimeClient = await streamVideoService.connectOpenAi(
-      existingAgent.id,
-      meetingId,
-    );
-
-    realtimeClient.updateSession({
-      instructions: existingAgent.instructions,
-    });
-  } else if (eventType === 'call.session_participant_left') {
-    const event = payload as CallSessionParticipantLeftEvent;
-
-    const meetingId = event.call_cid.split(':')[1];
-
-    if (!meetingId) {
-      return NextResponse.json(
-        { error: 'Missing meeting id' },
-        { status: 400 },
-      );
-    }
-
-    await streamVideoService.endCall(meetingId);
+    case 'call.recording_ready':
+      await handleCallRecordingReadyEvent(payload as CallRecordingReadyEvent);
+      break;
   }
 
   return NextResponse.json({ status: 'ok' });
