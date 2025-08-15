@@ -1,12 +1,11 @@
 import {
   BookOpenTextIcon,
-  ClockFadingIcon,
   FileTextIcon,
   FileVideoIcon,
   SparklesIcon,
 } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 
 import { useMeetingStore } from '@/_pages/meeting/store/meetingStore';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
