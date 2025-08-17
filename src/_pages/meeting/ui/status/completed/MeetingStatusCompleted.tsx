@@ -1,15 +1,10 @@
-import {
-  BookOpenTextIcon,
-  FileTextIcon,
-  FileVideoIcon,
-  SparklesIcon,
-} from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
 import { useMeetingStore } from '@/_pages/meeting/store/meetingStore';
+import { MeetingStatusTabsList } from '@/_pages/meeting/ui/status/completed/MeetingStatusTabsList';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 
 export const MeetingStatusCompleted: FC = observer(() => {
   const { meeting } = useMeetingStore();
@@ -20,46 +15,7 @@ export const MeetingStatusCompleted: FC = observer(() => {
         <Tabs defaultValue={'summary'}>
           <div className={'rounded-lg border bg-white px-3'}>
             <ScrollArea>
-              <TabsList
-                className={'bg-background h-13 justify-start rounded-none p-0'}
-              >
-                <TabsTrigger
-                  className={
-                    'text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-                  }
-                  value={'summary'}
-                >
-                  <BookOpenTextIcon />
-                  Summary
-                </TabsTrigger>
-                <TabsTrigger
-                  className={
-                    'text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-                  }
-                  value={'transcript'}
-                >
-                  <FileTextIcon />
-                  Transcript
-                </TabsTrigger>
-                <TabsTrigger
-                  className={
-                    'text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-                  }
-                  value={'recording'}
-                >
-                  <FileVideoIcon />
-                  Recording
-                </TabsTrigger>
-                <TabsTrigger
-                  className={
-                    'text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-                  }
-                  value={'chat'}
-                >
-                  <SparklesIcon />
-                  Ask AI
-                </TabsTrigger>
-              </TabsList>
+              <MeetingStatusTabsList />
               <ScrollBar orientation={'horizontal'} />
             </ScrollArea>
           </div>

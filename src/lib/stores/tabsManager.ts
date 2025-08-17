@@ -1,4 +1,4 @@
-import { makeAutoObservable, reaction, runInAction } from 'mobx';
+import { makeAutoObservable, observable, reaction, runInAction } from 'mobx';
 
 import { callFunction } from '@/lib/utils/common';
 import { LinkedAbortController } from '@/lib/utils/linkedAbortController';
@@ -33,15 +33,26 @@ class TabsManager<T extends TabManagerItem> {
   tabsIndexesMap!: Map<T['id'], number>;
 
   constructor(config: TabManagerConfig<T>) {
-    this.abortController = new LinkedAbortController(this.config.abortSignal);
+    this.abortController = new LinkedAbortController(this.config?.abortSignal);
     this.config = config;
 
-    makeAutoObservable(this);
+    makeAutoObservable(
+      this,
+      {
+        abortController: false,
+        config: false,
+        tabs: observable.ref,
+        tabsIndexesMap: observable.ref,
+      },
+      {
+        autoBind: true,
+      },
+    );
 
     reaction(
       () => callFunction(this.config.tabs),
       (tabs) => this.setTabs(tabs ?? []),
-      { fireImmediately: true, signal: this.abortController.signal },
+      { fireImmediately: true, signal: this.abortController?.signal },
     );
   }
 
