@@ -3,8 +3,9 @@ import { FC } from 'react';
 
 import { useMeetingStore } from '@/_pages/meeting/store/meetingStore';
 import { MeetingStatusTabsList } from '@/_pages/meeting/ui/status/completed/MeetingStatusTabsList';
+import { MeetingTabsContent } from '@/_pages/meeting/ui/status/completed/MeetingTabsContent';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Tabs } from '@/components/ui/tabs';
 
 export const MeetingStatusCompleted: FC = observer(() => {
   const { meeting } = useMeetingStore();
@@ -19,17 +20,7 @@ export const MeetingStatusCompleted: FC = observer(() => {
               <ScrollBar orientation={'horizontal'} />
             </ScrollArea>
           </div>
-          <TabsContent value={'recording'}>
-            <div className={'rounded-lg border bg-white px-4 py-5'}>
-              {meeting.recordingUrl && (
-                <video
-                  className={'w-full rounded-lg'}
-                  controls
-                  src={meeting.recordingUrl}
-                />
-              )}
-            </div>
-          </TabsContent>
+          <MeetingTabsContent />
         </Tabs>
       </div>
     )

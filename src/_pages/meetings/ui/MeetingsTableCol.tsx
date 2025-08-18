@@ -1,7 +1,6 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import humanizeDuration from 'humanize-duration';
 import { CornerDownRightIcon } from 'lucide-react';
 import Link from 'next/link';
 
@@ -14,14 +13,7 @@ import {
   MeetingStatusType,
 } from '@/lib/models/meetings/meetings';
 import { cn } from '@/lib/utils';
-
-const formatDuration = (ms: number) => {
-  return humanizeDuration(ms * 1000, {
-    largest: 1,
-    round: true,
-    units: ['h', 'm', 's'],
-  });
-};
+import { formatDuration } from '@/lib/utils/common';
 
 const statusColorMap: Record<MeetingStatusType, string> = {
   active: 'bg-blue-500/200 text-blue-800 border-blue-800/5',

@@ -1,3 +1,5 @@
+import humanizeDuration from 'humanize-duration';
+
 import { MaybeFn } from '@/lib/utils/tsUtils';
 
 export const callFunction = <TValue, TArgs extends any[] = []>(
@@ -9,4 +11,12 @@ export const callFunction = <TValue, TArgs extends any[] = []>(
   }
 
   return fn;
+};
+
+export const formatDuration = (ms: number) => {
+  return humanizeDuration(ms * 1000, {
+    largest: 1,
+    round: true,
+    units: ['h', 'm', 's'],
+  });
 };

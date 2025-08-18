@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { TabsStatusType } from '@/_pages/meeting/types/types';
+import { TabsStatusType } from '@/_pages/meeting/constants/constants';
 import { TabsTrigger } from '@/components/ui/tabs';
 
 interface MeetingStatusTabItem {
@@ -17,7 +17,6 @@ export const MeetingStatusTabItem: FC<MeetingStatusTabItem> = (props) => {
       }
       value={tab.id}
     >
-      {tab.icon}
       {tab.label}
     </TabsTrigger>
   );

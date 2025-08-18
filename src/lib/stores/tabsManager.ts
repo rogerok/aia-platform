@@ -1,4 +1,4 @@
-import { makeAutoObservable, observable, reaction, runInAction } from 'mobx';
+import { makeAutoObservable, reaction, runInAction } from 'mobx';
 
 import { callFunction } from '@/lib/utils/common';
 import { LinkedAbortController } from '@/lib/utils/linkedAbortController';
@@ -41,8 +41,6 @@ class TabsManager<T extends TabManagerItem> {
       {
         abortController: false,
         config: false,
-        tabs: observable.ref,
-        tabsIndexesMap: observable.ref,
       },
       {
         autoBind: true,

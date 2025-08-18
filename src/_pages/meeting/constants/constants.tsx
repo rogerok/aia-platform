@@ -1,29 +1,27 @@
-import {
-  BookOpenTextIcon,
-  FileTextIcon,
-  FileVideoIcon,
-  SparklesIcon,
-} from 'lucide-react';
+export const MeetingStatusTabsValues = {
+  chat: 'chat',
+  recording: 'recording',
+  summary: 'summary',
+  transcript: 'transcript',
+} as const;
 
 export const StatusTabsConstant = [
   {
-    icon: <BookOpenTextIcon />,
-    id: 'summary',
+    id: MeetingStatusTabsValues.summary,
     label: 'Summary',
   },
   {
-    icon: <FileTextIcon />,
-    id: 'transcript',
+    id: MeetingStatusTabsValues.transcript,
     label: 'Transcript',
   },
   {
-    icon: <FileVideoIcon />,
-    id: 'recording',
+    id: MeetingStatusTabsValues.recording,
     label: 'Recording',
   },
   {
-    icon: <SparklesIcon />,
-    id: 'chat',
+    id: MeetingStatusTabsValues.chat,
     label: 'Ask AI',
   },
 ] as const;
+
+export type TabsStatusType = (typeof StatusTabsConstant)[number];

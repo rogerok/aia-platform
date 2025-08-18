@@ -10,13 +10,16 @@ import { createTabManager } from '@/lib/stores/tabsManager';
 export const MeetingStatusTabsList: FC = () => {
   const [tabsManager] = useState(() =>
     createTabManager({
-      abortSignal: new AbortController().signal,
+      fallbackTab: 'chat',
       tabs: StatusTabsConstant,
     }),
   );
 
   return (
-    <TabsList className={'bg-background h-13 justify-start rounded-none p-0'}>
+    <TabsList
+      className={'bg-background h-13 justify-start rounded-none p-0'}
+      defaultValue={tabsManager.activeTab}
+    >
       {tabsManager.tabs.map((tab) => (
         <MeetingStatusTabItem key={tab.id} tab={tab} />
       ))}
