@@ -7,7 +7,11 @@ import { routes } from '@/lib/constants/routes';
 import { errorHandle } from '@/lib/decorators/errorHandle';
 import { successNotify } from '@/lib/decorators/successNotify';
 import { MobxForm } from '@/lib/form/mobxForm';
-import { MeetingEditModel, MeetingModel } from '@/lib/models/meetings/meetings';
+import {
+  MeetingEditModel,
+  MeetingModel,
+  MeetingTrasncriptModel,
+} from '@/lib/models/meetings/meetings';
 import { createStoreContext } from '@/lib/storeAdapter/storeAdapter';
 import { BooleanToggleStore } from '@/lib/stores/booleanToggleStore';
 import { RequestStore } from '@/lib/stores/requestStore';
@@ -30,10 +34,15 @@ class MeetingStore {
     defaultValues: formDefaultValues,
     onSubmit: () => this.submitForm(),
   });
+
   editRequest = new RequestStore(trpcClient.meetings.update.mutate);
   meeting: MeetingModel | null = null;
 
   router: RouterStore;
+
+  transcript: MeetingTrasncriptModel[] = [];
+
+  transcriptRequest = new RequestStore(trpcClient.meetings.getTranscript.query);
 
   constructor(router: RouterStore) {
     makeAutoObservable(
@@ -69,6 +78,22 @@ class MeetingStore {
       if (resp.status === 'success') {
         this.router.navigate(routes.meetings());
       }
+    }
+  }
+
+  async fetchTranscript() {
+    if (this.meeting) {
+      const resp = await this.transcriptRequest.execute({
+        id: this.meeting.id,
+      });
+
+      runInAction(() => {
+        if (resp.status === 'success') {
+          this.transcript = resp.data.map((item) =>
+            plainToInstance(MeetingTrasncriptModel, item),
+          );
+        }
+      });
     }
   }
 

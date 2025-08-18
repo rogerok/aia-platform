@@ -1,8 +1,18 @@
 import { TRPCError } from '@trpc/server';
-import { and, count, desc, eq, getTableColumns, ilike, sql } from 'drizzle-orm';
+import {
+  and,
+  count,
+  desc,
+  eq,
+  getTableColumns,
+  ilike,
+  inArray,
+  sql,
+} from 'drizzle-orm';
+import JSONL from 'jsonl-parse-stringify';
 
 import { db } from '@/db';
-import { agents, meetings } from '@/db/schemas/schema';
+import { agents, meetings, user } from '@/db/schemas/schema';
 import {
   MeetingCreateModel,
   MeetingDeleteModel,
@@ -10,6 +20,7 @@ import {
   MeetingGetModel,
   MeetingsQueryModel,
 } from '@/lib/models/meetings/meetings';
+import { StreamTranscriptItem } from '@/lib/models/meetings/stream';
 import { streamVideoService } from '@/lib/streamVideo';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { processInput } from '@/trpc/server/validator';
@@ -162,6 +173,67 @@ export const meetingsRouter = createTRPCRouter({
       return meeting;
     }),
 
+  getTranscript: protectedProcedure
+    .input((input) => processInput(MeetingGetModel, input))
+    .query(async ({ ctx, input }) => {
+      const [meeting] = await db
+        .select()
+        .from(meetings)
+        .where(
+          and(eq(meetings.id, input.id), eq(meetings.userId, ctx.auth.user.id)),
+        );
+
+      if (!meeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      if (!meeting.transcriptUrl) {
+        return [];
+      }
+
+      const transcript = await fetch(meeting.transcriptUrl)
+        .then((res) => res.text())
+        .then((text) => JSONL.parse<StreamTranscriptItem>(text))
+        .catch(() => {
+          return [];
+        });
+
+      const speakersIds = [
+        ...new Set(transcript.map((item) => item.speaker_id)),
+      ];
+
+      const userSpeakers = await db
+        .select()
+        .from(user)
+        .where(inArray(user.id, speakersIds));
+
+      const agentSpeakers = await db
+        .select()
+        .from(agents)
+        .where(inArray(agents.id, speakersIds));
+
+      const speakers = [...userSpeakers, ...agentSpeakers];
+
+      return transcript.map((item) => {
+        const speaker = speakers.find(
+          (speaker) => speaker.id === item.speaker_id,
+        );
+
+        return {
+          speakerId: item.speaker_id,
+          startTs: item.start_ts,
+          stopTs: item.stop_ts,
+          text: item.text,
+          type: item.type,
+          user: {
+            name: speaker?.name ?? 'Unknown',
+          },
+        };
+      });
+    }),
   update: protectedProcedure
     .input((input) => processInput(MeetingEditModel, input))
     .mutation(async ({ ctx, input }) => {
