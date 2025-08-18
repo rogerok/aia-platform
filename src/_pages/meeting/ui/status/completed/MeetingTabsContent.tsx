@@ -6,6 +6,7 @@ import Markdown from 'react-markdown';
 
 import { MeetingStatusTabsValues } from '@/_pages/meeting/constants/constants';
 import { useMeetingStore } from '@/_pages/meeting/store/meetingStore';
+import { MeetingTranscript } from '@/_pages/meeting/ui/status/completed/MeetingTranscript';
 import { GeneratedAvatar } from '@/components/custom/GeneratedAvatar/GeneratedAvatar';
 import { LinkComponent } from '@/components/custom/LinkComponent/LinkComponent';
 import { Badge } from '@/components/ui/badge';
@@ -122,13 +123,7 @@ export const MeetingTabsContent: FC = observer(() => {
         </TabsContent>
         <TabsContent value={MeetingStatusTabsValues.transcript}>
           <div className={'rounded-lg border bg-white px-4 py-5'}>
-            {meeting.recordingUrl && (
-              <video
-                className={'w-full rounded-lg'}
-                controls
-                src={meeting.recordingUrl}
-              />
-            )}
+            <MeetingTranscript />
           </div>
         </TabsContent>
         <TabsContent value={MeetingStatusTabsValues.chat}>

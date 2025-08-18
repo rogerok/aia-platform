@@ -9,3 +9,7 @@ export type MeetingsGetManyRouterOutput = inferRouterOutputs<
 export type MeetingsGetOneRouterOutput = inferRouterOutputs<
   typeof meetingsRouter
 >['getOne'];
+
+export type MeetingsGetTranscriptRouterOutput = inferRouterOutputs<
+  typeof meetingsRouter
+>['getTranscript'];

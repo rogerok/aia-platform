@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { Expose } from 'class-transformer';
 import {
   IsIn,
@@ -137,7 +138,6 @@ export class MeetingDeleteModel {
   @IsString()
   id: string;
 }
-
 export class MeetingEditModel {
   @IsString()
   agentId: string;
@@ -148,4 +148,30 @@ export class MeetingEditModel {
   @IsString()
   @Length(2, 256)
   name: string;
+}
+
+class MeetingUserTranscriptModel {
+  @IsString()
+  name: string;
+}
+
+export class MeetingTrasncriptModel {
+  @IsString()
+  speakerId: string;
+
+  @IsNumber()
+  startTs: number;
+
+  @IsNumber()
+  stopTs: number;
+
+  @IsString()
+  text: string;
+
+  @IsString()
+  type: string;
+
+  @Type(() => MeetingUserTranscriptModel)
+  @ValidateNested()
+  user: MeetingUserTranscriptModel;
 }
