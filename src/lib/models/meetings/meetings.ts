@@ -63,8 +63,9 @@ export class MeetingModel {
   @IsString()
   createdAt: string;
 
+  @ValidateIf((_, value) => value !== null)
   @IsNumber()
-  duration: number;
+  duration: number | null;
 
   @ValidateIf((_, value) => value !== null)
   @IsString()

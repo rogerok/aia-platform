@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
 import { useMeetingStore } from '@/_pages/meeting/store/meetingStore';
+import { MeetingStatusCompleted } from '@/_pages/meeting/ui/status/completed/MeetingStatusCompleted';
 import { MeetingStatusActive } from '@/_pages/meeting/ui/status/MeetingStatusActive';
 import { MeetingStatusCancelled } from '@/_pages/meeting/ui/status/MeetingStatusCancelled';
 import { MeetingStatusProcessing } from '@/_pages/meeting/ui/status/MeetingStatusProcessing';
@@ -23,6 +24,9 @@ export const RenderStatus: FC = observer(() => {
 
     case MeetingStatusConstant.upcoming:
       return <MeetingStatusUpcoming />;
+
+    case MeetingStatusConstant.completed:
+      return <MeetingStatusCompleted />;
 
     default:
       return null;
